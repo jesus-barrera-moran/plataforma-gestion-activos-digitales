@@ -22,7 +22,7 @@ const Profile = ({ currentAccount }) => {
         />
 
         <div className={Style.profile_account_info}>
-          <p>Shoaib Bhai</p>
+          <p>Cartera Digital</p>
           <small>{currentAccount.slice(0, 18)}..</small>
         </div>
       </div>
@@ -39,27 +39,6 @@ const Profile = ({ currentAccount }) => {
             <FaRegImage />
             <p>
               <Link href={{ pathname: "/author" }}>My Items</Link>
-            </p>
-          </div>
-          <div className={Style.profile_menu_one_item}>
-            <FaUserEdit />
-            <p>
-              <Link href={{ pathname: "/account" }}>Edit Profile</Link>
-            </p>
-          </div>
-        </div>
-
-        <div className={Style.profile_menu_two}>
-          <div className={Style.profile_menu_one_item}>
-            <MdHelpCenter />
-            <p>
-              <Link href={{ pathname: "/contactus" }}>Help</Link>
-            </p>
-          </div>
-          <div className={Style.profile_menu_one_item}>
-            <TbDownload />
-            <p>
-              <Link href={{ pathname: "/aboutus" }}>About Us</Link>
             </p>
           </div>
         </div>

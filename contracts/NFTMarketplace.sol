@@ -122,6 +122,19 @@ contract NFTMarketplace is ERC721URIStorage {
         _transfer(msg.sender, address(this), tokenId);
     }
 
+    function cancelSale(uint256 tokenId) public {
+        MarketItem storage item = idToMarketItem[tokenId];
+        require(item.seller == msg.sender, "Only the seller can cancel the sell");
+        require(!item.sold, "Item has already been sold");
+
+        item.owner = item.seller;
+        item.sold = true;
+        item.seller = payable(address(0));
+        _itemsSold.increment();
+
+        _transfer(address(this), msg.sender, tokenId);
+    }
+
     /* Creates the sale of a marketplace item */
     /* Transfers ownership of the item, as well as funds between parties */
     function createMarketSale(uint256 tokenId) public payable {
@@ -137,6 +150,19 @@ contract NFTMarketplace is ERC721URIStorage {
         payable(owner).transfer(listingPrice);
         payable(idToMarketItem[tokenId].seller).transfer(msg.value);
         idToMarketItem[tokenId].seller = payable(address(0));
+    }
+
+    /* Allows a user to donate a token to another user */
+    function donateToken(uint256 tokenId, address recipient) public {
+        require(idToMarketItem[tokenId].owner == msg.sender, "Only the token owner can donate it");
+        require(recipient != address(0), "Recipient address cannot be zero address");
+
+        idToMarketItem[tokenId].owner = payable(recipient);
+        idToMarketItem[tokenId].seller = payable(address(0));
+        idToMarketItem[tokenId].sold = true;
+        _itemsSold.increment();
+
+        _transfer(msg.sender, recipient, tokenId);
     }
 
     /* Returns all unsold market items */

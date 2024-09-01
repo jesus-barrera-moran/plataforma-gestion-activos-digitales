@@ -4,8 +4,7 @@ import { DiJqueryLogo } from "react-icons/di";
 //----IMPORT ICON
 import { MdNotifications } from "react-icons/md";
 import { BsSearch } from "react-icons/bs";
-import { CgMenuLeft, CgMenuRight } from "react-icons/cg";
-import Link from "next/link";
+import { CgMenuRight } from "react-icons/cg";
 import { useRouter } from "next/router";
 
 //INTERNAL IMPORT
@@ -29,14 +28,14 @@ const NavBar = () => {
 
   const openMenu = (e) => {
     const btnText = e.target.innerText;
-    if (btnText == "Discover") {
-      setDiscover(true);
+    if (btnText == "Descubrir") {
+      setDiscover(!discover);
       setHelp(false);
       setNotification(false);
       setProfile(false);
-    } else if (btnText == "Help Center") {
+    } else if (btnText == "Centro de Ayuda") {
       setDiscover(false);
-      setHelp(true);
+      setHelp(!help);
       setNotification(false);
       setProfile(false);
     } else {
@@ -59,13 +58,21 @@ const NavBar = () => {
   };
 
   const openProfile = () => {
+    setProfile(true);
+    setHelp(false);
+    setDiscover(false);
+    setNotification(false);
+  };
+
+  const closeProfile = () => {
+    setProfile(false);
+  };
+
+  const toggleProfile = () => {
     if (!profile) {
-      setProfile(true);
-      setHelp(false);
-      setDiscover(false);
-      setNotification(false);
+      openProfile();
     } else {
-      setProfile(false);
+      closeProfile();
     }
   };
 
@@ -76,6 +83,10 @@ const NavBar = () => {
       setOpenSideMenu(false);
     }
   };
+
+  useEffect(() => {
+    closeProfile();
+  }, [router]);
 
   //SMART CONTRACT SECTION
   const { currentAccount, connectWallet, openError } = useContext(
@@ -91,7 +102,7 @@ const NavBar = () => {
           </div>
           <div className={Style.navbar_container_left_box_input}>
             <div className={Style.navbar_container_left_box_input_box}>
-              <input type="text" placeholder="Search NFT" />
+              <input type="text" placeholder="Buscar" />
               <BsSearch onClick={() => {}} className={Style.search_icon} />
             </div>
           </div>
@@ -101,7 +112,7 @@ const NavBar = () => {
         <div className={Style.navbar_container_right}>
           <div className={Style.navbar_container_right_discover}>
             {/* DISCOVER MENU */}
-            <p onClick={(e) => openMenu(e)}>Discover</p>
+            <p onClick={(e) => openMenu(e)}>Descubrir</p>
             {discover && (
               <div className={Style.navbar_container_right_discover_box}>
                 <Discover />
@@ -111,7 +122,7 @@ const NavBar = () => {
 
           {/* HELP CENTER MENU */}
           <div className={Style.navbar_container_right_help}>
-            <p onClick={(e) => openMenu(e)}>Help Center</p>
+            <p onClick={(e) => openMenu(e)}>Centro de Ayuda</p>
             {help && (
               <div className={Style.navbar_container_right_help_box}>
                 <HelpCenter />
@@ -131,10 +142,10 @@ const NavBar = () => {
           {/* CREATE BUTTON SECTION */}
           <div className={Style.navbar_container_right_button}>
             {currentAccount == "" ? (
-              <Button btnName="Connect" handleClick={() => connectWallet()} />
+              <Button btnName="Conectar" handleClick={() => connectWallet()} />
             ) : (
               <Button
-                btnName="Create"
+                btnName="Registrar"
                 handleClick={() => router.push("/uploadNFT")}
               />
             )}
@@ -149,7 +160,7 @@ const NavBar = () => {
                 alt="Profile"
                 width={40}
                 height={40}
-                onClick={() => openProfile()}
+                onClick={() => toggleProfile()}
                 className={Style.navbar_container_right_profile}
               />
 

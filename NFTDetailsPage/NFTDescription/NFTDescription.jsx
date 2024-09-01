@@ -10,7 +10,7 @@ import {
   MdOutlineDeleteSweep,
 } from "react-icons/md";
 import { BsThreeDots } from "react-icons/bs";
-import { FaWallet, FaPercentage } from "react-icons/fa";
+import { FaWallet, FaPercentage, FaCheckCircle } from "react-icons/fa";
 import {
   TiSocialFacebook,
   TiSocialLinkedin,
@@ -35,6 +35,10 @@ const NFTDescription = ({ nft }) => {
   const [history, setHistory] = useState(true);
   const [provanance, setProvanance] = useState(false);
   const [owner, setOwner] = useState(false);
+  const [displayPriceForm, setDisplayPriceForm] = useState(false);
+  const [price, setPrice] = useState(0);
+  const [displayRecipientForm, setDisplayRecipientForm] = useState(false);
+  const [recipient, setRecipient] = useState("");
 
   const router = useRouter();
 
@@ -104,7 +108,20 @@ const NFTDescription = ({ nft }) => {
   };
 
   //SMART CONTRACT DATA
-  const { buyNFT, currentAccount } = useContext(NFTMarketplaceContext);
+  const { buyNFT, createSale, cancelSale, donateDigitalAsset, currentAccount } = useContext(NFTMarketplaceContext);
+
+  const listOnMarketplace = async (tokenURI, price, isReselling, id) => {
+    try {
+      await createSale(tokenURI, price, isReselling, id);
+      router.push("/author");
+    } catch (error) {
+      console.log("Ha ocurrido un error al listar el activo ditigal en el mercado", error);
+    }
+  };
+
+  const transferDigitalAsset = async (tokenURI, recipient) => {
+
+  };
 
   return (
     <div className={Style.NFTDescription}>
@@ -205,44 +222,6 @@ const NFTDescription = ({ nft }) => {
           </div>
 
           <div className={Style.NFTDescription_box_profile_biding}>
-            <p>
-              <MdTimer /> <span>Auction ending in:</span>
-            </p>
-
-            <div className={Style.NFTDescription_box_profile_biding_box_timer}>
-              <div
-                className={
-                  Style.NFTDescription_box_profile_biding_box_timer_item
-                }
-              >
-                <p>2</p>
-                <span>Days</span>
-              </div>
-              <div
-                className={
-                  Style.NFTDescription_box_profile_biding_box_timer_item
-                }
-              >
-                <p>22</p>
-                <span>hours</span>
-              </div>
-              <div
-                className={
-                  Style.NFTDescription_box_profile_biding_box_timer_item
-                }
-              >
-                <p>45</p>
-                <span>mins</span>
-              </div>
-              <div
-                className={
-                  Style.NFTDescription_box_profile_biding_box_timer_item
-                }
-              >
-                <p>12</p>
-                <span>secs</span>
-              </div>
-            </div>
 
             <div className={Style.NFTDescription_box_profile_biding_box_price}>
               <div
@@ -250,29 +229,50 @@ const NFTDescription = ({ nft }) => {
                   Style.NFTDescription_box_profile_biding_box_price_bid
                 }
               >
-                <small>Current Bid</small>
+                <small>Precio Actual</small>
                 <p>
-                  {nft.price} ETH <span>( ≈ $3,221.22)</span>
+                  {nft.price} ETH
                 </p>
               </div>
-
-              <span>[96 in stock]</span>
             </div>
 
             <div className={Style.NFTDescription_box_profile_biding_box_button}>
-              {currentAccount == nft.seller.toLowerCase() ? (
-                <p>You can't buy your own NFT</p>
-              ) : currentAccount == nft.owner.toLowerCase() ? (
-                <Button
-                  icon={<FaWallet />}
-                  btnName="List on Marketplace"
-                  handleClick={() =>
-                    router.push(
-                      `/reSellToken?id=${nft.tokenId}&tokenURI=${nft.tokenURI}&price=${nft.price}`
-                    )
-                  }
-                  classStyle={Style.button}
-                />
+              {currentAccount == nft.seller?.toLowerCase() ? (
+                <div>
+                    <Button
+                    icon={<FaPercentage />}
+                    btnName="Remover del Mercado"
+                    handleClick={() => cancelSale(nft.tokenId)}
+                    classStyle={Style.button}
+                    />
+                </div>
+              ) : currentAccount == nft.owner?.toLowerCase() ? (
+                <>
+                  <Button
+                    icon={<FaWallet />}
+                    btnName="Listar en el Mercado"
+                    handleClick={() => {
+                      // router.push(
+                      //   `/reSellToken?id=${nft.tokenId}&tokenURI=${nft.tokenURI}&price=${nft.price}&name=${nft.name}`
+                      // )
+                      setDisplayPriceForm(!displayPriceForm);
+                      setDisplayRecipientForm(false);
+                    }}
+                    classStyle={Style.button}
+                  />
+                  <Button
+                    icon={<FaWallet />}
+                    btnName="Transferir Activo Digital"
+                    handleClick={() => {
+                      // router.push(
+                      //   `/reSellToken?id=${nft.tokenId}&tokenURI=${nft.tokenURI}&price=${nft.price}`
+                      // )
+                      setDisplayRecipientForm(!displayRecipientForm);
+                      setDisplayPriceForm(false);
+                    }}
+                    classStyle={Style.button}
+                  />
+                </>
               ) : (
                 <Button
                   icon={<FaWallet />}
@@ -281,14 +281,38 @@ const NFTDescription = ({ nft }) => {
                   classStyle={Style.button}
                 />
               )}
-
-              <Button
-                icon={<FaPercentage />}
-                btnName="Make offer"
-                handleClick={() => {}}
-                classStyle={Style.button}
-              />
             </div>
+
+            {(displayPriceForm || displayRecipientForm) && (
+              <div className={Style.NFTDescription_box_profile_biding_list_on_marketplace}>
+                {displayPriceForm ? (
+                  <form>
+                    <label>Precio</label>
+                    <input
+                      type="number"
+                      min={1}
+                      placeholder="Ingresa el precio..."
+                      onChange={(e) => setPrice(e.target.value)}
+                    />
+                  </form>
+                ) :
+                displayRecipientForm ? (
+                  <form>
+                    <label>Destinatario</label>
+                    <input
+                      type="text"
+                      min={1}
+                      placeholder="Ingresa el destinatario..."
+                      onChange={(e) => setRecipient(e.target.value)}
+                    />
+                  </form>
+                ) : null}
+                <Button
+                  icon={<FaCheckCircle />}
+                  handleClick={() => { displayPriceForm ? buyNFT(nft, price) : buyNFT(nft, recipient) }}
+                />
+              </div>
+            )}
 
             <div className={Style.NFTDescription_box_profile_biding_box_tabs}>
               <button onClick={(e) => openTabs(e)}>Bid History</button>

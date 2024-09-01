@@ -19,11 +19,10 @@ const HeroSection = () => {
         <div className={Style.heroSection_box_left}>
           <h1>{titleData} 🖼️</h1>
           <p>
-            Discover the most outstanding NTFs in all topics of life. Creative
-            your NTFs and sell them
+            Registra y protege tus activos digitales en la blockchain de forma segura y confiable.
           </p>
           <Button
-            btnName="Start your search"
+            btnName="Descubrir Activos Digitales"
             handleClick={() => router.push("/searchPage")}
           />
         </div>

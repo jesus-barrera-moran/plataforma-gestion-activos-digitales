@@ -71,7 +71,7 @@ const searchPage = () => {
       <Filter />
       {nfts?.length == 0 ? <Loader /> : <NFTCardTwo NFTData={nfts} />}
       <Slider />
-      <Brand />
+      {/* <Brand /> */}
     </div>
   );
 };

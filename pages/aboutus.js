@@ -106,7 +106,7 @@ const aboutus = () => {
           </div>
         </div>
       </div>
-      <Brand />
+      {/* <Brand /> */}
     </div>
   );
 };

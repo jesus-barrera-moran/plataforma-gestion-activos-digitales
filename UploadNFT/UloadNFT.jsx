@@ -74,7 +74,7 @@ const UloadNFT = ({ uploadToIPFS, createNFT, uploadToPinata }) => {
 
       <div className={Style.upload_box}>
         <div className={formStyle.Form_box_input}>
-          <label htmlFor="nft">Item Name</label>
+          <label htmlFor="nft">Nombre</label>
           <input
             type="text"
             placeholder="shoaib bhai"
@@ -156,7 +156,7 @@ const UloadNFT = ({ uploadToIPFS, createNFT, uploadToPinata }) => {
         </div>
 
         <div className={formStyle.Form_box_input_social}>
-          <div className={formStyle.Form_box_input}>
+          {/* <div className={formStyle.Form_box_input}>
             <label htmlFor="Royalties">Royalties</label>
             <div className={formStyle.Form_box_input_box}>
               <div className={formStyle.Form_box_input_box_icon}>
@@ -168,8 +168,8 @@ const UloadNFT = ({ uploadToIPFS, createNFT, uploadToPinata }) => {
                 onChange={(e) => setRoyalties(e.target.value)}
               />
             </div>
-          </div>
-          <div className={formStyle.Form_box_input}>
+          </div> */}
+          {/* <div className={formStyle.Form_box_input}>
             <label htmlFor="size">Size</label>
             <div className={formStyle.Form_box_input_box}>
               <div className={formStyle.Form_box_input_box_icon}>
@@ -181,8 +181,8 @@ const UloadNFT = ({ uploadToIPFS, createNFT, uploadToPinata }) => {
                 onChange={(e) => setFileSize(e.target.value)}
               />
             </div>
-          </div>
-          <div className={formStyle.Form_box_input}>
+          </div> */}
+          {/* <div className={formStyle.Form_box_input}>
             <label htmlFor="Propertie">Propertie</label>
             <div className={formStyle.Form_box_input_box}>
               <div className={formStyle.Form_box_input_box_icon}>
@@ -194,7 +194,7 @@ const UloadNFT = ({ uploadToIPFS, createNFT, uploadToPinata }) => {
                 onChange={(e) => setProperties(e.target.value)}
               />
             </div>
-          </div>
+          </div> */}
 
           <div className={formStyle.Form_box_input}>
             <label htmlFor="Price">Price</label>

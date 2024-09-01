@@ -111,7 +111,7 @@ const author = () => {
         ))}
       </div>
 
-      <Brand />
+      {/* <Brand /> */}
     </div>
   );
 };

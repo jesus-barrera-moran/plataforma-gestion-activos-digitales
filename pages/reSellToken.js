@@ -16,7 +16,7 @@ const reSellToken = () => {
   const [image, setImage] = useState("");
   const [price, setPrice] = useState('"');
   const router = useRouter();
-  const { id, tokenURI } = router.query;
+  const { id, tokenURI, name } = router.query;
 
   const fetchNFT = async () => {
     if (!tokenURI) return;
@@ -35,19 +35,19 @@ const reSellToken = () => {
       await createSale(tokenURI, price, true, id);
       router.push("/author");
     } catch (error) {
-      console.log("Error while resell", error);
+      console.log("Ha ocurrido un error al listar el activo ditigal en el mercado", error);
     }
   };
   return (
     <div className={Style.reSellToken}>
       <div className={Style.reSellToken_box}>
-        <h1>ReSell Your Token, Set Price</h1>
+        <h1>{name}</h1>
         <div className={formStyle.Form_box_input}>
-          <label htmlFor="name">Price</label>
+          <label htmlFor="name">Precio</label>
           <input
             type="number"
             min={1}
-            placeholder="reSell price"
+            placeholder="Ingresa el precio..."
             className={formStyle.Form_box_input_userName}
             onChange={(e) => setPrice(e.target.value)}
           />
@@ -55,12 +55,12 @@ const reSellToken = () => {
 
         <div className={Style.reSellToken_box_image}>
           {image && (
-            <Image src={image} alt="resell nft" width={400} height={400} />
+            <Image src={image} alt="Activo Digital" width={400} height={400} />
           )}
         </div>
 
         <div className={Style.reSellToken_box_btn}>
-          <Button btnName="Resell NFT" handleClick={() => resell()} />
+          <Button btnName="Listar en el Mercado" handleClick={() => resell()} />
         </div>
       </div>
     </div>

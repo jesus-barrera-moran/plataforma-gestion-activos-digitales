@@ -149,17 +149,17 @@ const FollowerTab = ({ TopCreator }) => {
   return (
     <div className={Style.followerTab}>
       <div className={Style.followerTab_title}>
-        <h2> Top Creators List..</h2>
+        <h2> Creadores</h2>
         <div className={Style.followerTab_tabs}>
           <div className={Style.followerTab_tabs_btn}>
             <button onClick={() => openPopular()}>
-              <RiUserFollowFill /> Popular
+              <RiUserFollowFill /> Populares
             </button>
             <button onClick={() => openFollower()}>
-              <RiUserFollowFill /> Following
+              <RiUserFollowFill /> Siguiendo
             </button>
             <button onClick={() => openNews()}>
-              <RiAwardLine /> NoteWorthy
+              <RiAwardLine /> Todos
             </button>
           </div>
         </div>
@@ -191,8 +191,8 @@ const FollowerTab = ({ TopCreator }) => {
 
       <div className={Style.followerTab_member}>
         <div className={Style.followerTab_member_box}>
-          <a href="#">Show me more</a>
-          <a href="#">Become, author</a>
+          <a href="#">Mostrar más</a>
+          <a href="/uploadNFT">Convertirse en autor</a>
         </div>
       </div>
     </div>

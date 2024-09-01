@@ -7,28 +7,28 @@ import Style from "./Discover.module.css";
 const Discover = () => {
   //--------DISCOVER NAVIGATION MENU
   const discover = [
+    // {
+    //   name: "Collection",
+    //   link: "collection",
+    // },
     {
-      name: "Collection",
-      link: "collection",
-    },
-    {
-      name: "Search",
+      name: "Explorar Mercado",
       link: "searchPage",
     },
+    // {
+    //   name: "Author Profile",
+    //   link: "author",
+    // },
+    // {
+    //   name: "Account Setting",
+    //   link: "account",
+    // },
     {
-      name: "Author Profile",
-      link: "author",
-    },
-    {
-      name: "Account Setting",
-      link: "account",
-    },
-    {
-      name: "Upload NFT",
+      name: "Registrar Activo Digital",
       link: "uploadNFT",
     },
     {
-      name: "Connect Wallet",
+      name: "Conectar Cartera",
       link: "connectWallet",
     },
   ];

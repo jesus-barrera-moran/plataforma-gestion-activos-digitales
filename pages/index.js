@@ -5,18 +5,18 @@ import Style from "../styles/index.module.css";
 import {
   HeroSection,
   Service,
-  BigNFTSilder,
+  // BigNFTSilder,
   Subscribe,
   Title,
   Category,
   Filter,
   NFTCard,
-  Collection,
-  AudioLive,
+  // Collection,
+  // AudioLive,
   FollowerTab,
-  Slider,
-  Brand,
-  Video,
+  // Slider,
+  // Brand,
+  // Video,
   Loader,
 } from "../components/componentsindex";
 import { getTopCreators } from "../TopCreators/TopCreators";
@@ -55,35 +55,35 @@ const Home = () => {
     <div className={Style.homePage}>
       <HeroSection />
       <Service />
-      <BigNFTSilder />
-      <Title
+      {/* <BigNFTSilder /> */}
+      {/* <Title
         heading="Audio Collection"
         paragraph="Discover the most outstanding NFTs in all topics of life."
       />
-      <AudioLive />
+      <AudioLive /> */}
       {creators.length == 0 ? (
         <Loader />
       ) : (
         <FollowerTab TopCreator={creators} />
       )}
 
-      <Slider />
-      <Collection />
+      {/* <Slider /> */}
+      {/* <Collection /> */}
       <Title
-        heading="Featured NFTs"
-        paragraph="Discover the most outstanding NFTs in all topics of life."
+        heading="Mercado de Activos Digitales"
+        paragraph="Descubre los activos digitales que se encuentran disponibles en el mercado."
       />
       <Filter />
-      {nfts.length == 0 ? <Loader /> : <NFTCard NFTData={nfts} />}
+      {nfts?.length == 0 ? <Loader /> : <NFTCard NFTData={nfts} />}
 
       <Title
-        heading="Browse by category"
-        paragraph="Explore the NFTs in the most featured categories."
+        heading="Explora por Categoría"
+        paragraph="Busca entre las diferentes categorías de activos digitales."
       />
       <Category />
       <Subscribe />
-      <Brand />
-      <Video />
+      {/* <Brand /> */}
+      {/* <Video /> */}
     </div>
   );
 };

@@ -11,65 +11,61 @@ const Service = () => {
         <div className={Style.service_box_item}>
           <Image
             src={images.service1}
-            alt="Filter & Discover"
+            alt="Instalar Cartera Digital"
             width={100}
             height={100}
           />
           <p className={Style.service_box_item_step}>
-            <span>Step 1</span>
+            <span>Paso 1</span>
           </p>
-          <h3>Filter & Discover</h3>
+          <h3>Instalar Cartera Digital</h3>
           <p>
-            Connect with wallet, discover, buy NTFs, sell your NFTs and earn
-            money
+            Descarga e instala la cartera digital de Metamask desde la tienda de tu navegador 
           </p>
         </div>
         <div className={Style.service_box_item}>
           <Image
             src={images.service2}
-            alt="Filter & Discover"
+            alt="Autenticar Cartera Digital"
             width={100}
             height={100}
           />
           <p className={Style.service_box_item_step}>
-            <span>Step 1</span>
+            <span>Paso 2</span>
           </p>
-          <h3>Filter & Discover</h3>
+          <h3>Autenticar Cartera Digital</h3>
           <p>
-            Connect with wallet, discover, buy NTFs, sell your NFTs and earn
-            money
+            Crea una cuenta en Metamask y autentica tu cartera digital
           </p>
         </div>
         <div className={Style.service_box_item}>
           <Image
             src={images.service3}
-            alt="Connect Wallet"
+            alt="Conectar Cartera Digital"
             width={100}
             height={100}
           />
           <p className={Style.service_box_item_step}>
-            <span>Step 1</span>
+            <span>Paso 3</span>
           </p>
-          <h3>Connect Wallet</h3>
+          <h3>Conectar Cartera Digital</h3>
           <p>
-            Connect with wallet, discover, buy NTFs, sell your NFTs and earn
-            money
+            Conecta tu cartera digital con nuestra plataforma utilizando el botón de conectar
           </p>
         </div>
         <div className={Style.service_box_item}>
           <Image
             src={images.service1}
-            alt="Filter & Discover"
+            alt="Gestionar Activos Digitales"
             width={100}
             height={100}
           />
           <p className={Style.service_box_item_step}>
-            <span>Step 1</span>
+            <span>Paso 4</span>
           </p>
-          <h3>Start trading</h3>
+          <h3>Gestionar Activos Digitales</h3>
           <p>
-            Connect with wallet, discover, buy NTFs, sell your NFTs and earn
-            money
+            Registra, protege y gestiona tus activos digitales de forma segura
           </p>
         </div>
       </div>
