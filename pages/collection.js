@@ -45,7 +45,7 @@ const collection = () => {
       <Filter />
       <NFTCardTwo NFTData={collectionArray} />
 
-      <Slider />
+      {/* <Slider /> */}
       {/* <Brand /> */}
     </div>
   );

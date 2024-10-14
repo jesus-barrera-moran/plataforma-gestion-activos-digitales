@@ -42,8 +42,8 @@ const NFTDetailsImg = ({ nft }) => {
       <div className={Style.NFTDetailsImg_box}>
         <div className={Style.NFTDetailsImg_box_NFT}>
           <div className={Style.NFTDetailsImg_box_NFT_like}>
-            <BsImages className={Style.NFTDetailsImg_box_NFT_like_icon} />
-            <p onClick={() => likeNFT()}>
+            {/* <BsImages className={Style.NFTDetailsImg_box_NFT_like_icon} /> */}
+            {/* <p onClick={() => likeNFT()}>
               {like ? (
                 <AiOutlineHeart
                   className={Style.NFTDetailsImg_box_NFT_like_icon}
@@ -54,7 +54,7 @@ const NFTDetailsImg = ({ nft }) => {
                 />
               )}
               <span>23</span>
-            </p>
+            </p> */}
           </div>
 
           <div className={Style.NFTDetailsImg_box_NFT_img}>
@@ -71,7 +71,7 @@ const NFTDetailsImg = ({ nft }) => {
           className={Style.NFTDetailsImg_box_description}
           onClick={() => openDescription()}
         >
-          <p>Description</p>
+          <p>Descripción</p>
           {description ? <TiArrowSortedUp /> : <TiArrowSortedDown />}
         </div>
 
@@ -85,21 +85,19 @@ const NFTDetailsImg = ({ nft }) => {
           className={Style.NFTDetailsImg_box_details}
           onClick={() => openDetails()}
         >
-          <p>Details</p>
+          <p>Detalles</p>
           {details ? <TiArrowSortedUp /> : <TiArrowSortedDown />}
         </div>
 
         {details && (
           <div className={Style.NFTDetailsImg_box_details_box}>
-            <small>2000 x 2000 px.IMAGE(685KB)</small>
-            <p>
-              <small>Contract Address</small>
-              <br></br>
-              {nft.seller}
-            </p>
             <p>
               <small>Token ID</small>
               &nbsp; &nbsp; {nft.tokenId}
+            </p>
+            <p>
+              <small>URL Website</small>
+              &nbsp; &nbsp; AstralSymphonyNFT.com
             </p>
           </div>
         )}

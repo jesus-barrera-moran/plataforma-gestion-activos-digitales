@@ -24,7 +24,7 @@ const Discover = () => {
     //   link: "account",
     // },
     {
-      name: "Registrar Activo Digital",
+      name: "Crear Activo Digital",
       link: "uploadNFT",
     },
     {

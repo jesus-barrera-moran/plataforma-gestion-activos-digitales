@@ -60,37 +60,7 @@ const DropZone = ({
       {fileUrl && (
         <aside className={Style.DropZone_box_aside}>
           <div className={Style.DropZone_box_aside_box}>
-            <img src={fileUrl} alt="nft image" width={200} height={200} />
-
-            <div className={Style.DropZone_box_aside_box_preview}>
-              <div className={Style.DropZone_box_aside_box_preview_one}>
-                <p>
-                  <samp>Nombre:</samp>
-                  {name || ""}
-                </p>
-              </div>
-
-              <div className={Style.DropZone_box_aside_box_preview_two}>
-                <p>
-                  <span>Descripción</span>
-                  {description || ""}
-                </p>
-              </div>
-
-              <div className={Style.DropZone_box_aside_box_preview_three}>
-                <p>
-                  <span>Categoría</span>
-                  {category || ""}
-                </p>
-              </div>
-
-              <div className={Style.DropZone_box_aside_box_preview_three}>
-                <p>
-                  <samp>Website:</samp>
-                  {website || ""}
-                </p>
-              </div>
-            </div>
+            <img src={fileUrl} alt="nft image" className={Style.DropZone_box_aside_box_image} />
           </div>
         </aside>
       )}

@@ -24,10 +24,10 @@ const Footer = () => {
           <Discover />
         </div>
 
-        <div className={Style.footer_box_help}>
+        {/* <div className={Style.footer_box_help}>
           <h3>Centro de Ayuda</h3>
           <HelpCenter />
-        </div>
+        </div> */}
 
       </div>
     </div>

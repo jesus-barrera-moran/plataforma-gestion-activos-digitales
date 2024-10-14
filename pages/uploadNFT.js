@@ -15,18 +15,18 @@ const uploadNFT = () => {
     <div className={Style.uploadNFT}>
       <div className={Style.uploadNFT_box}>
         <div className={Style.uploadNFT_box_heading}>
-          <h1>Create New NFT</h1>
+          <h1>Crea un nuevo activo digital</h1>
           <p>
-            You can set preferred display name, create your profile URL and
-            manage other personal settings.
+            Puede establecer el nombre para mostrar preferido, 
+            crear la URL de su perfil y administrar otras configuraciones personales.
           </p>
         </div>
 
         <div className={Style.uploadNFT_box_title}>
-          <h2>Image, Video, Audio, or 3D Model</h2>
+          <h2>Imagen, Video, Audio, entre otros.</h2>
           <p>
-            File types supported: JPG, PNG, GIF, SVG, MP4, WEBM, MP3, WAV, OGG,
-            GLB, GLTF. Max size: 100 MB
+            Tipos de archivos permitidos: JPG, PNG, GIF, SVG, MP4, WEBM, MP3, WAV. 
+            Max size: 100 MB
           </p>
         </div>
 

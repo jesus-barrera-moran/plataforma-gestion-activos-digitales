@@ -58,8 +58,8 @@ const UloadNFT = ({ uploadToIPFS, createNFT, uploadToPinata }) => {
     <div className={Style.upload}>
       <DropZone
         title="JPG, PNG, WEBM , MAX 100MB"
-        heading="Drag & drop file"
-        subHeading="or Browse media on your device"
+        heading="Arrastra y suelta tu archivo aquí"
+        subHeading="o navega para elegir un archivo"
         name={name}
         website={website}
         description={description}
@@ -77,7 +77,7 @@ const UloadNFT = ({ uploadToIPFS, createNFT, uploadToPinata }) => {
           <label htmlFor="nft">Nombre</label>
           <input
             type="text"
-            placeholder="shoaib bhai"
+            placeholder="Ingresa el nombre del activo digital"
             className={formStyle.Form_box_input_userName}
             onChange={(e) => setName(e.target.value)}
           />
@@ -92,119 +92,43 @@ const UloadNFT = ({ uploadToIPFS, createNFT, uploadToPinata }) => {
 
             <input
               type="text"
-              placeholder="website"
+              placeholder="Ingresa el URL del sitio web de referencia"
               onChange={(e) => setWebsite(e.target.value)}
             />
           </div>
 
           <p className={Style.upload_box_input_para}>
-            Ciscrypt will include a link to this URL on this item's detail page,
-            so that users can click to learn more about it. You are welcome to
-            link to your own webpage with more details.
+            Se incluirá un enlace a esta URL en la página de detalles de este elemento, 
+            para que los usuarios puedan hacer clic para obtener más información al respecto. 
+            Le invitamos a vincularse a su propia página web con más detalles.
           </p>
         </div>
 
         <div className={formStyle.Form_box_input}>
-          <label htmlFor="description">Description</label>
+          <label htmlFor="description">Descripción</label>
           <textarea
             name=""
             id=""
             cols="30"
             rows="6"
-            placeholder="something about yourself in few words"
+            placeholder="Ingresa la descripción del activo digital"
             onChange={(e) => setDescription(e.target.value)}
           ></textarea>
           <p>
-            The description will be included on the item's detail page
-            underneath its image. Markdown syntax is supported.
+            La descripción se incluirá en la página de detalles del artículo debajo de su imagen.
           </p>
-        </div>
-
-        <div className={formStyle.Form_box_input}>
-          <label htmlFor="name">Choose collection</label>
-          <p className={Style.upload_box_input_para}>
-            Choose an exiting collection or create a new one
-          </p>
-
-          <div className={Style.upload_box_slider_div}>
-            {categoryArry.map((el, i) => (
-              <div
-                className={`${Style.upload_box_slider} ${
-                  active == i + 1 ? Style.active : ""
-                }`}
-                key={i + 1}
-                onClick={() => (setActive(i + 1), setCategory(el.category))}
-              >
-                <div className={Style.upload_box_slider_box}>
-                  <div className={Style.upload_box_slider_box_img}>
-                    <Image
-                      src={el.image}
-                      alt="background image"
-                      width={70}
-                      height={70}
-                      className={Style.upload_box_slider_box_img_img}
-                    />
-                  </div>
-                  <div className={Style.upload_box_slider_box_img_icon}>
-                    <TiTick />
-                  </div>
-                </div>
-                <p>Crypto Legend - {el.category} </p>
-              </div>
-            ))}
-          </div>
         </div>
 
         <div className={formStyle.Form_box_input_social}>
-          {/* <div className={formStyle.Form_box_input}>
-            <label htmlFor="Royalties">Royalties</label>
-            <div className={formStyle.Form_box_input_box}>
-              <div className={formStyle.Form_box_input_box_icon}>
-                <FaPercent />
-              </div>
-              <input
-                type="text"
-                placeholder="20%"
-                onChange={(e) => setRoyalties(e.target.value)}
-              />
-            </div>
-          </div> */}
-          {/* <div className={formStyle.Form_box_input}>
-            <label htmlFor="size">Size</label>
-            <div className={formStyle.Form_box_input_box}>
-              <div className={formStyle.Form_box_input_box_icon}>
-                <MdOutlineAttachFile />
-              </div>
-              <input
-                type="text"
-                placeholder="165MB"
-                onChange={(e) => setFileSize(e.target.value)}
-              />
-            </div>
-          </div> */}
-          {/* <div className={formStyle.Form_box_input}>
-            <label htmlFor="Propertie">Propertie</label>
-            <div className={formStyle.Form_box_input_box}>
-              <div className={formStyle.Form_box_input_box_icon}>
-                <AiTwotonePropertySafety />
-              </div>
-              <input
-                type="text"
-                placeholder="Propertie"
-                onChange={(e) => setProperties(e.target.value)}
-              />
-            </div>
-          </div> */}
-
           <div className={formStyle.Form_box_input}>
-            <label htmlFor="Price">Price</label>
+            <label htmlFor="Price">Precio</label>
             <div className={formStyle.Form_box_input_box}>
               <div className={formStyle.Form_box_input_box_icon}>
                 <AiTwotonePropertySafety />
               </div>
               <input
                 type="text"
-                placeholder="Price"
+                placeholder="Ingresa el precio del activo digital"
                 onChange={(e) => setPrice(e.target.value)}
               />
             </div>
@@ -213,7 +137,7 @@ const UloadNFT = ({ uploadToIPFS, createNFT, uploadToPinata }) => {
 
         <div className={Style.upload_box_btn}>
           <Button
-            btnName="Upload"
+            btnName="Crear Activo Digital"
             handleClick={async () =>
               createNFT(
                 name,
@@ -221,18 +145,8 @@ const UloadNFT = ({ uploadToIPFS, createNFT, uploadToPinata }) => {
                 image,
                 description,
                 router
-                // website,
-                // royalties,
-                // fileSize,
-                // category,
-                // properties
               )
             }
-            classStyle={Style.upload_box_btn_style}
-          />
-          <Button
-            btnName="Preview"
-            handleClick={() => {}}
             classStyle={Style.upload_box_btn_style}
           />
         </div>

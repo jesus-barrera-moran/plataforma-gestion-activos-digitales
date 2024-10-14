@@ -6,20 +6,20 @@ import {
   HeroSection,
   Service,
   // BigNFTSilder,
-  Subscribe,
+  // Subscribe,
   Title,
-  Category,
+  // Category,
   Filter,
   NFTCard,
   // Collection,
   // AudioLive,
-  FollowerTab,
+  // FollowerTab,
   // Slider,
   // Brand,
   // Video,
   Loader,
 } from "../components/componentsindex";
-import { getTopCreators } from "../TopCreators/TopCreators";
+// import { getTopCreators } from "../TopCreators/TopCreators";
 
 //IMPORTING CONTRCT DATA
 import { NFTMarketplaceContext } from "../Context/NFTMarketplaceContext";
@@ -48,42 +48,19 @@ const Home = () => {
 
   //CREATOR LIST
 
-  const creators = getTopCreators(nfts);
+  // const creators = getTopCreators(nfts);
   // console.log(creators);
 
   return (
     <div className={Style.homePage}>
       <HeroSection />
       <Service />
-      {/* <BigNFTSilder /> */}
-      {/* <Title
-        heading="Audio Collection"
-        paragraph="Discover the most outstanding NFTs in all topics of life."
-      />
-      <AudioLive /> */}
-      {creators.length == 0 ? (
-        <Loader />
-      ) : (
-        <FollowerTab TopCreator={creators} />
-      )}
-
-      {/* <Slider /> */}
-      {/* <Collection /> */}
       <Title
         heading="Mercado de Activos Digitales"
         paragraph="Descubre los activos digitales que se encuentran disponibles en el mercado."
       />
       <Filter />
       {nfts?.length == 0 ? <Loader /> : <NFTCard NFTData={nfts} />}
-
-      <Title
-        heading="Explora por Categoría"
-        paragraph="Busca entre las diferentes categorías de activos digitales."
-      />
-      <Category />
-      <Subscribe />
-      {/* <Brand /> */}
-      {/* <Video /> */}
     </div>
   );
 };

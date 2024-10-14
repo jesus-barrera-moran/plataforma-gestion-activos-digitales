@@ -16,38 +16,38 @@ import {
 import { NFTMarketplaceContext } from "../Context/NFTMarketplaceContext";
 
 const author = () => {
-  const followerArray = [
-    {
-      background: images.creatorbackground1,
-      user: images.user1,
-      seller: "7d64gf748849j47fy488444",
-    },
-    {
-      background: images.creatorbackground2,
-      user: images.user2,
-      seller: "7d64gf748849j47fy488444",
-    },
-    {
-      background: images.creatorbackground3,
-      user: images.user3,
-      seller: "7d64gf748849j47fy488444",
-    },
-    {
-      background: images.creatorbackground4,
-      user: images.user4,
-      seller: "7d64gf748849j47fy488444",
-    },
-    {
-      background: images.creatorbackground5,
-      user: images.user5,
-      seller: "7d64gf748849j47fy488444",
-    },
-    {
-      background: images.creatorbackground6,
-      user: images.user6,
-      seller: "7d64gf748849j47fy488444",
-    },
-  ];
+  // const followerArray = [
+  //   {
+  //     background: images.creatorbackground1,
+  //     user: images.user1,
+  //     seller: "7d64gf748849j47fy488444",
+  //   },
+  //   {
+  //     background: images.creatorbackground2,
+  //     user: images.user2,
+  //     seller: "7d64gf748849j47fy488444",
+  //   },
+  //   {
+  //     background: images.creatorbackground3,
+  //     user: images.user3,
+  //     seller: "7d64gf748849j47fy488444",
+  //   },
+  //   {
+  //     background: images.creatorbackground4,
+  //     user: images.user4,
+  //     seller: "7d64gf748849j47fy488444",
+  //   },
+  //   {
+  //     background: images.creatorbackground5,
+  //     user: images.user5,
+  //     seller: "7d64gf748849j47fy488444",
+  //   },
+  //   {
+  //     background: images.creatorbackground6,
+  //     user: images.user6,
+  //     seller: "7d64gf748849j47fy488444",
+  //   },
+  // ];
 
   const [collectiables, setCollectiables] = useState(true);
   const [created, setCreated] = useState(false);
@@ -81,7 +81,7 @@ const author = () => {
   return (
     <div className={Style.author}>
       <Banner bannerImage={images.creatorbackground2} />
-      <AuthorProfileCard currentAccount={currentAccount} />
+      {/* <AuthorProfileCard currentAccount={currentAccount} /> */}
       <AuthorTaps
         setCollectiables={setCollectiables}
         setCreated={setCreated}
@@ -100,16 +100,15 @@ const author = () => {
         nfts={nfts}
         myNFTS={myNFTs}
       />
-      <Title
+      {/* <Title
         heading="Popular Creators"
-        paragraph="Click on music icon and enjoy NTF music or audio
-"
+        paragraph="Click on music icon and enjoy NTF music or audio"
       />
       <div className={Style.author_box}>
         {followerArray.map((el, i) => (
           <FollowerTabCard i={i} el={el} />
         ))}
-      </div>
+      </div> */}
 
       {/* <Brand /> */}
     </div>

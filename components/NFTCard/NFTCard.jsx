@@ -23,13 +23,13 @@ const NFTCard = ({ NFTData }) => {
 
   const [like, setLike] = useState(true);
 
-  const likeNft = () => {
-    if (!like) {
-      setLike(true);
-    } else {
-      setLike(false);
-    }
-  };
+  // const likeNft = () => {
+  //   if (!like) {
+  //     setLike(true);
+  //   } else {
+  //     setLike(false);
+  //   }
+  // };
 
   // console.log(NFTData);
   return (
@@ -47,7 +47,7 @@ const NFTCard = ({ NFTData }) => {
 
             <div className={Style.NFTCard_box_update}>
               <div className={Style.NFTCard_box_update_left}>
-                <div
+                {/* <div
                   className={Style.NFTCard_box_update_left_like}
                   onClick={() => likeNft()}
                 >
@@ -59,13 +59,12 @@ const NFTCard = ({ NFTData }) => {
                     />
                   )}
                   {""} 22
-                </div>
+                </div> */}
               </div>
 
               <div className={Style.NFTCard_box_update_right}>
                 <div className={Style.NFTCard_box_update_right_info}>
-                  <small>Remaining time</small>
-                  <p>3h : 15m : 20s</p>
+                  <p>En Venta</p>
                 </div>
               </div>
             </div>
@@ -83,7 +82,7 @@ const NFTCard = ({ NFTData }) => {
                     <div
                       className={Style.NFTCard_box_update_details_price_box_bid}
                     >
-                      <small>Current Bid</small>
+                      <small>Precio</small>
                       <p>{el.price}ETH</p>
                     </div>
                     <div
@@ -91,7 +90,7 @@ const NFTCard = ({ NFTData }) => {
                         Style.NFTCard_box_update_details_price_box_stock
                       }
                     >
-                      <small>61 in stock</small>
+                      {/* <small>61 in stock</small> */}
                     </div>
                   </div>
                 </div>

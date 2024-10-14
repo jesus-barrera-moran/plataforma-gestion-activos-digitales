@@ -15,25 +15,25 @@ const connectWallet = () => {
       provider: images.provider1,
       name: "Metamask",
     },
-    {
-      provider: images.provider2,
-      name: "walletConnect",
-    },
-    {
-      provider: images.provider3,
-      name: "walletlink",
-    },
-    {
-      provider: images.provider1,
-      name: "Formatic",
-    },
+    // {
+    //   provider: images.provider2,
+    //   name: "walletConnect",
+    // },
+    // {
+    //   provider: images.provider3,
+    //   name: "walletlink",
+    // },
+    // {
+    //   provider: images.provider1,
+    //   name: "Formatic",
+    // },
   ];
   return (
     <div className={Style.connectWallet}>
       <div className={Style.connectWallet_box}>
-        <h1>Connect your wallet</h1>
+        <h1>Conecta tu cartera digital</h1>
         <p className={Style.connectWallet_box_para}>
-          Connect with one of our avaliabl wallet providers or create a new one
+          Conecta tu cartera digital con alguno de los proveedores disponibles
         </p>
 
         <div className={Style.connectWallet_box_provider}>
