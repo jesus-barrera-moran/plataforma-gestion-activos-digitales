@@ -314,7 +314,7 @@ const NFTDescription = ({ nft }) => {
                 ) : null}
                 <Button
                   icon={<FaCheckCircle />}
-                  handleClick={() => { displayPriceForm ? listOnMarketplace(nft.tokenURI, nft.price, true, nft.tokenId) : transferDigitalAsset(nft.tokenId, recipient) }}
+                  handleClick={() => { displayPriceForm ? listOnMarketplace(nft.tokenURI, price, true, nft.tokenId) : transferDigitalAsset(nft.tokenId, recipient) }}
                 />
               </div>
             )}
