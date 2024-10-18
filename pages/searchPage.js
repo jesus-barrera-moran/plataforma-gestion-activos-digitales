@@ -12,7 +12,7 @@ import images from "../img";
 import { NFTMarketplaceContext } from "../Context/NFTMarketplaceContext";
 
 const searchPage = () => {
-  const { fetchNFTs, setError, currentAccount } = useContext(
+  const { fetchNFTs, setError, currentAccount, checkIfWalletConnected } = useContext(
     NFTMarketplaceContext
   );
 
@@ -20,6 +20,10 @@ const searchPage = () => {
   const [nfts, setNfts] = useState([]);
   const [nftsCopy, setNftsCopy] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    checkIfWalletConnected();
+  }, []);
 
   useEffect(() => {
     try {

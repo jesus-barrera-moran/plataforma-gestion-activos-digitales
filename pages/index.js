@@ -21,7 +21,6 @@ const Home = () => {
 
   // State hooks
   const [nfts, setNfts] = useState([]);
-  const [nftsCopy, setNftsCopy] = useState([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -37,7 +36,6 @@ const Home = () => {
       fetchNFTs()
         .then((items) => {
           setNfts(items?.reverse());
-          setNftsCopy(items);
           // Set loading to false after fetching
           setLoading(false);
         })

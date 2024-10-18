@@ -1,21 +1,16 @@
 import React, { useState } from "react";
-import { MdOutlineHttp, MdOutlineAttachFile } from "react-icons/md";
-import { FaPercent } from "react-icons/fa";
+import { MdOutlineHttp } from "react-icons/md";
 import { AiTwotonePropertySafety } from "react-icons/ai";
-import { TiTick } from "react-icons/ti";
-import Image from "next/image";
 import { useRouter } from "next/router";
 
 //INTERNAL IMPORT
 import Style from "./Upload.module.css";
 import formStyle from "../AccountPage/Form/Form.module.css";
-import images from "../img";
 import { Button } from "../components/componentsindex.js";
 import { DropZone } from "../UploadNFT/uploadNFTIndex.js";
 
 const UloadNFT = ({ uploadToIPFS, createNFT, uploadToPinata }) => {
   const [price, setPrice] = useState("");
-  const [active, setActive] = useState(0);
   const [name, setName] = useState("");
   const [website, setWebsite] = useState("");
   const [description, setDescription] = useState("");
@@ -26,33 +21,6 @@ const UloadNFT = ({ uploadToIPFS, createNFT, uploadToPinata }) => {
   const [image, setImage] = useState(null);
 
   const router = useRouter();
-
-  const categoryArry = [
-    {
-      image: images.nft_image_1,
-      category: "Sports",
-    },
-    {
-      image: images.nft_image_2,
-      category: "Arts",
-    },
-    {
-      image: images.nft_image_3,
-      category: "Music",
-    },
-    {
-      image: images.nft_image_1,
-      category: "Digital",
-    },
-    {
-      image: images.nft_image_2,
-      category: "Time",
-    },
-    {
-      image: images.nft_image_3,
-      category: "Photography",
-    },
-  ];
 
   return (
     <div className={Style.upload}>

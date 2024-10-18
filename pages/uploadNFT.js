@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
+import React, { useEffect, useContext } from "react";
 
 //INTERNAL IMPORT
 import Style from "../styles/upload-nft.module.css";
@@ -8,9 +8,14 @@ import { UploadNFT } from "../UploadNFT/uploadNFTIndex";
 import { NFTMarketplaceContext } from "../Context/NFTMarketplaceContext";
 
 const uploadNFT = () => {
-  const { uploadToIPFS, createNFT, uploadToPinata } = useContext(
+  const { uploadToIPFS, createNFT, uploadToPinata, checkIfWalletConnected } = useContext(
     NFTMarketplaceContext
   );
+
+  useEffect(() => {
+    checkIfWalletConnected();
+  }, []);
+
   return (
     <div className={Style.uploadNFT}>
       <div className={Style.uploadNFT_box}>
@@ -21,14 +26,6 @@ const uploadNFT = () => {
             crear la URL de su perfil y administrar otras configuraciones personales.
           </p>
         </div>
-
-        {/* <div className={Style.uploadNFT_box_title}>
-          <h2>Imagen, Video, Audio, entre otros.</h2>
-          <p>
-            Tipos de archivos permitidos: JPG, PNG, GIF, SVG, MP4, WEBM, MP3, WAV. 
-            Max size: 100 MB
-          </p>
-        </div> */}
 
         <div className={Style.uploadNFT_box_form}>
           <UploadNFT
