@@ -14,10 +14,6 @@ const UloadNFT = ({ uploadToIPFS, createNFT, uploadToPinata }) => {
   const [name, setName] = useState("");
   const [website, setWebsite] = useState("");
   const [description, setDescription] = useState("");
-  const [royalties, setRoyalties] = useState("");
-  const [fileSize, setFileSize] = useState("");
-  const [category, setCategory] = useState(0);
-  const [properties, setProperties] = useState("");
   const [image, setImage] = useState(null);
 
   const router = useRouter();
@@ -28,16 +24,8 @@ const UloadNFT = ({ uploadToIPFS, createNFT, uploadToPinata }) => {
         title="MAX 100MB"
         heading="Arrastra y suelta tu archivo aquí"
         subHeading="o navega para elegir un archivo"
-        name={name}
-        website={website}
-        description={description}
-        royalties={royalties}
-        fileSize={fileSize}
-        category={category}
-        properties={properties}
-        setImage={setImage}
-        uploadToIPFS={uploadToIPFS}
         uploadToPinata={uploadToPinata}
+        setImage={setImage}
       />
 
       <div className={Style.upload_box}>
@@ -112,6 +100,7 @@ const UloadNFT = ({ uploadToIPFS, createNFT, uploadToPinata }) => {
                 price,
                 image,
                 description,
+                website,
                 router
               )
             }

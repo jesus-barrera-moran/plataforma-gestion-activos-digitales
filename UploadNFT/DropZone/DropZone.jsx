@@ -10,21 +10,12 @@ const DropZone = ({
   title,
   heading,
   subHeading,
-  name,
-  website,
-  description,
-  royalties,
-  fileSize,
-  category,
-  properties,
-  uploadToIPFS,
   uploadToPinata,
   setImage,
 }) => {
   const [fileUrl, setFileUrl] = useState(null);
 
   const onDrop = useCallback(async (acceptedFile) => {
-    // const url = await uploadToIPFS(acceptedFile[0]);
     const url = await uploadToPinata(acceptedFile[0]);
     setFileUrl(url);
     setImage(url);
