@@ -42,7 +42,7 @@ const searchPage = () => {
   }, [currentAccount]);
 
   const onHandleSearch = (value) => {
-    const filteredNFTS = nfts.filter(({ name }) =>
+    const filteredNFTS = nfts?.filter(({ name }) =>
       name.toLowerCase().includes(value.toLowerCase())
     );
 
@@ -54,7 +54,7 @@ const searchPage = () => {
   };
 
   const onClearSearch = () => {
-    if (nfts.length && nftsCopy.length) {
+    if (nfts?.length && nftsCopy.length) {
       setNfts(nftsCopy);
     }
   };
@@ -68,7 +68,7 @@ const searchPage = () => {
       {loading ? (
         // Show Loader while loading is true
         <Loader />
-      ) : nfts.length === 0 ? (
+      ) : nfts?.length === 0 ? (
         // Styled message when no NFTs are available
         <div className={Style.noItemsMessage}>
           <h2>No hay elementos a la venta en este momento</h2>

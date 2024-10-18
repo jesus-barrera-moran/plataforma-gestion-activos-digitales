@@ -97,7 +97,7 @@ const NFTDetailsImg = ({ nft }) => {
             </p>
             <p>
               <small>URL Website</small>
-              &nbsp; &nbsp; AstralSymphonyNFT.com
+              &nbsp; &nbsp; {nft.website}
             </p>
           </div>
         )}
