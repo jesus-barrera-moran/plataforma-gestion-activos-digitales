@@ -54,7 +54,7 @@ const NavBar = () => {
         {/* //END OF LEFT SECTION */}
         <div className={Style.navbar_container_right}>
           <div className={Style.logo} onClick={() => router.push("/")}>
-            LOGO
+            PGAD
             {/* <DiJqueryLogo onClick={() => router.push("/")} /> */}
           </div>
 
