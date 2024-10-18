@@ -5,51 +5,48 @@ import Style from "../styles/index.module.css";
 import {
   HeroSection,
   Service,
-  // BigNFTSilder,
-  // Subscribe,
   Title,
-  // Category,
   Filter,
   NFTCard,
-  // Collection,
-  // AudioLive,
-  // FollowerTab,
-  // Slider,
-  // Brand,
-  // Video,
   Loader,
 } from "../components/componentsindex";
-// import { getTopCreators } from "../TopCreators/TopCreators";
 
-//IMPORTING CONTRCT DATA
+//IMPORTING CONTRACT DATA
 import { NFTMarketplaceContext } from "../Context/NFTMarketplaceContext";
 
 const Home = () => {
   const { checkIfWalletConnected, currentAccount } = useContext(
     NFTMarketplaceContext
   );
+
+  // State hooks
+  const [nfts, setNfts] = useState([]);
+  const [nftsCopy, setNftsCopy] = useState([]);
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     checkIfWalletConnected();
   }, []);
 
   const { fetchNFTs } = useContext(NFTMarketplaceContext);
-  const [nfts, setNfts] = useState([]);
-  const [nftsCopy, setNftsCopy] = useState([]);
 
   useEffect(() => {
     if (currentAccount) {
-      fetchNFTs().then((items) => {
-        console.log(nfts);
-        setNfts(items?.reverse());
-        setNftsCopy(items);
-      });
+      // Set loading to true when fetching NFTs
+      setLoading(true);
+      fetchNFTs()
+        .then((items) => {
+          setNfts(items?.reverse());
+          setNftsCopy(items);
+          // Set loading to false after fetching
+          setLoading(false);
+        })
+        .catch(() => {
+          // Handle any errors, ensure loading stops in case of an error
+          setLoading(false);
+        });
     }
   }, [currentAccount]);
-
-  //CREATOR LIST
-
-  // const creators = getTopCreators(nfts);
-  // console.log(creators);
 
   return (
     <div className={Style.homePage}>
@@ -60,7 +57,23 @@ const Home = () => {
         paragraph="Descubre los activos digitales que se encuentran disponibles en el mercado."
       />
       <Filter />
-      {nfts?.length == 0 ? <Loader /> : <NFTCard NFTData={nfts} />}
+
+      {loading ? (
+        // Show Loader while loading is true
+        <Loader />
+      ) : nfts.length === 0 ? (
+        // Styled message when no NFTs are available
+        <div className={Style.noItemsMessage}>
+          <h2>No hay elementos a la venta en este momento</h2>
+          <p>
+            Lo sentimos, pero actualmente no hay ningún activo digital disponible
+            para la venta. Por favor, vuelve a intentarlo más tarde.
+          </p>
+        </div>
+      ) : (
+        // Show NFT cards when loading is false and NFTs are available
+        <NFTCard NFTData={nfts} />
+      )}
     </div>
   );
 };
