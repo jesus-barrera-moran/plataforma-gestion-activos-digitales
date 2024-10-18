@@ -1,31 +1,21 @@
-import React, { useState } from "react";
-import Image from "next/image";
+import React from "react";
 import { BsImage } from "react-icons/bs";
-import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
-import { MdVerified, MdTimer } from "react-icons/md";
 import Link from "next/link";
 
 //INTERNAL IMPORT
 import Style from "./NFTCardTwo.module.css";
-import { LikeProfile } from "../../components/componentsindex";
 
-const NFTCardTwo = ({ NFTData }) => {
-  const [like, setLike] = useState(false);
-  const [likeInc, setLikeInc] = useState(21);
-
-  const likeNFT = () => {
-    if (!like) {
-      setLike(true);
-      setLikeInc(23);
-    } else {
-      setLike(false);
-      setLikeInc(23 + 1);
-    }
-  };
-
-  // console.log(NFTData);
+const NFTCardTwo = ({ NFTData, isOnSale }) => {
 
   return (
+    (!NFTData || NFTData.length === 0) ? (
+      <div className={Style.noItemsMessage}>
+        <h2>No posees activos digitales</h2>
+        <p>
+          Actualmente no tienes ningún activo digital en la sección "{isOnSale ? 'En Venta' : 'No en Venta'}". Explora el mercado o crea un nuevo activo para empezar.
+        </p>
+      </div>
+    ) : (
     <div className={Style.NFTCardTwo}>
       {NFTData?.map((el, i) => (
         <Link href={{ pathname: "/NFT-details", query: el }} key={i + 1}>
@@ -67,6 +57,7 @@ const NFTCardTwo = ({ NFTData }) => {
         </Link>
       ))}
     </div>
+    )
   );
 };
 
