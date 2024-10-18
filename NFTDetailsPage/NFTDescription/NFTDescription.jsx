@@ -300,7 +300,7 @@ const NFTDescription = ({ nft }) => {
             {(displayPriceForm || displayRecipientForm) && (
               <div className={Style.NFTDescription_box_profile_biding_list_on_marketplace}>
                 {displayPriceForm ? (
-                  <form>
+                   <form onSubmit={(e) => e.preventDefault()}>
                     <label>Precio</label>
                     <input
                       type="number"
@@ -311,7 +311,7 @@ const NFTDescription = ({ nft }) => {
                   </form>
                 ) :
                 displayRecipientForm ? (
-                  <form>
+                   <form onSubmit={(e) => e.preventDefault()}>
                     <label>Destinatario</label>
                     <input
                       type="text"
