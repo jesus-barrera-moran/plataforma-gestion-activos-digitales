@@ -5,7 +5,16 @@ import { useRouter } from "next/router";
 import NFTDetailsPage from "../NFTDetailsPage/NFTDetailsPage";
 
 //IMPORT SMART CONTRACT DATA
+import { NFTMarketplaceContext } from "../Context/NFTMarketplaceContext";
 const NFTDetails = () => {
+
+  const { checkIfWalletConnected } = useContext(
+    NFTMarketplaceContext
+  );
+
+  useEffect(() => {
+    checkIfWalletConnected();
+  }, []);
 
   const [nft, setNft] = useState({
     image: "",

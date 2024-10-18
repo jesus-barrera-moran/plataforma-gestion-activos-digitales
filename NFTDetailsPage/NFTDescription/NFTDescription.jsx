@@ -39,8 +39,17 @@ const NFTDescription = ({ nft }) => {
   const [price, setPrice] = useState(0);
   const [displayRecipientForm, setDisplayRecipientForm] = useState(false);
   const [recipient, setRecipient] = useState("");
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
 
   const router = useRouter();
+
+  useEffect(() => {
+    if ((displayPriceForm && price > 0) || (displayRecipientForm && recipient !== "")) {
+      setIsButtonDisabled(false);
+    } else {
+      setIsButtonDisabled(true);
+    }
+  }, [price, recipient]);
 
   // const historyArray = [
   //   images.user1,
@@ -314,6 +323,7 @@ const NFTDescription = ({ nft }) => {
                 ) : null}
                 <Button
                   icon={<FaCheckCircle />}
+                  disabled={isButtonDisabled}
                   handleClick={() => { displayPriceForm ? listOnMarketplace(nft.tokenURI, price, true, nft.tokenId) : transferDigitalAsset(nft.tokenId, recipient) }}
                 />
               </div>
