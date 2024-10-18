@@ -22,13 +22,13 @@ const uploadNFT = () => {
           </p>
         </div>
 
-        <div className={Style.uploadNFT_box_title}>
+        {/* <div className={Style.uploadNFT_box_title}>
           <h2>Imagen, Video, Audio, entre otros.</h2>
           <p>
             Tipos de archivos permitidos: JPG, PNG, GIF, SVG, MP4, WEBM, MP3, WAV. 
             Max size: 100 MB
           </p>
-        </div>
+        </div> */}
 
         <div className={Style.uploadNFT_box_form}>
           <UploadNFT

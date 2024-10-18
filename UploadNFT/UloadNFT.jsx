@@ -57,7 +57,7 @@ const UloadNFT = ({ uploadToIPFS, createNFT, uploadToPinata }) => {
   return (
     <div className={Style.upload}>
       <DropZone
-        title="JPG, PNG, WEBM , MAX 100MB"
+        title="MAX 100MB"
         heading="Arrastra y suelta tu archivo aquí"
         subHeading="o navega para elegir un archivo"
         name={name}
