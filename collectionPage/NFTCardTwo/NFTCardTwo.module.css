@@ -13,6 +13,9 @@
   cursor: pointer;
   transition: all 0.3s ease-in;
   border-radius: 1rem;
+  /* display: flex;
+  flex-direction: column;
+  justify-content: space-between; */
 }
 
 .NFTCardTwo_box:hover {

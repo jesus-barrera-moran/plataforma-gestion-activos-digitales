@@ -30,34 +30,37 @@ const NFTCardTwo = ({ NFTData }) => {
       {NFTData?.map((el, i) => (
         <Link href={{ pathname: "/NFT-details", query: el }} key={i + 1}>
           <div className={Style.NFTCardTwo_box} key={i + 1}>
-            <div className={Style.NFTCardTwo_box_like}>
-              <div className={Style.NFTCardTwo_box_like_box}>
-                <div className={Style.NFTCardTwo_box_like_box_box}>
-                  <BsImage className={Style.NFTCardTwo_box_like_box_box_icon} />
+            <div>
+              <div className={Style.NFTCardTwo_box_like}>
+                <div className={Style.NFTCardTwo_box_like_box}>
+                  <div className={Style.NFTCardTwo_box_like_box_box}>
+                    <BsImage className={Style.NFTCardTwo_box_like_box_box_icon} />
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <div className={Style.NFTCardTwo_box_img}>
-              <img
-                src={el.image}
-                alt="NFT"
-                className={Style.NFTCardTwo_box_img_img}
-                objectFit="cover"
-              />
-            </div>
-
-            <div className={Style.NFTCardTwo_box_info}>
-              <div className={Style.NFTCardTwo_box_info_left}>
-                <p>{el.name}</p>
+              <div className={Style.NFTCardTwo_box_img}>
+                <img
+                  src={el.image}
+                  alt="NFT"
+                  className={Style.NFTCardTwo_box_img_img}
+                  objectFit="cover"
+                />
               </div>
-              <small>{i + 1}</small>
             </div>
 
-            <div className={Style.NFTCardTwo_box_price}>
-              <div className={Style.NFTCardTwo_box_price_box}>
-                <small>Precio</small>
-                <p>{el.price} ETH</p>
+            <div>
+              <div className={Style.NFTCardTwo_box_info}>
+                <div className={Style.NFTCardTwo_box_info_left}>
+                  <p>{el.name}</p>
+                </div>
+              </div>
+
+              <div className={Style.NFTCardTwo_box_price}>
+                <div className={Style.NFTCardTwo_box_price_box}>
+                  <small>Precio</small>
+                  <p>{el.price} ETH</p>
+                </div>
               </div>
             </div>
           </div>
