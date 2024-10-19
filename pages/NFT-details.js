@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useRouter } from "next/router";
-import { Table } from "antd";
+import { Table, Tag } from "antd";
 import { NFTMarketplaceAddress } from "../Context/constants";
 
 // INTERNAL IMPORT
@@ -39,8 +39,6 @@ const NFTDetails = () => {
       if (nft.tokenId) {
         try {
           const history = await getNFTTransactionHistory(nft.tokenId);
-          // console.log("Historial de transacciones:", history);
-          // Ordenar las transacciones y agregar la lógica para la columna "Acción"
           const sortedHistory = history
             .sort((a, b) => b.blockNumber - a.blockNumber)
             .map((tx) => ({
@@ -49,8 +47,6 @@ const NFTDetails = () => {
               to: tx.to?.toLowerCase() === NFTMarketplaceAddress?.toLowerCase() ? "Mercado" : tx.to,
               action: determineAction(tx, NFTMarketplaceAddress),
             }));
-
-            console.log("Historial de transacciones ordenado:", sortedHistory);
 
           setTransactions(sortedHistory);
         } catch (error) {
@@ -82,40 +78,68 @@ const NFTDetails = () => {
       title: "De",
       dataIndex: "from",
       key: "from",
-      style: { padding: '4px' },
+      align: "left",
+      render: (text) => <span style={{ fontSize: '14px' }}>{text}</span>,
     },
     {
       title: "Para",
       dataIndex: "to",
       key: "to",
-      style: { padding: '4px' },
+      align: "left",
+      render: (text) => <span style={{ fontSize: '14px' }}>{text}</span>,
     },
     {
       title: "Hash de Transacción",
       dataIndex: "transactionHash",
       key: "transactionHash",
+      align: "left",
       render: (text) => (
         <a
           href={`https://etherscan.io/tx/${text}`}
           target="_blank"
           rel="noopener noreferrer"
+          style={{ fontSize: '14px', color: '#1890ff' }}
         >
-          {text.substring(0, 10)}...
+          {text.substring(0, 20)}...
         </a>
       ),
-      style: { padding: '4px' },
     },
     {
       title: "Número de Bloque",
       dataIndex: "blockNumber",
       key: "blockNumber",
-      style: { padding: '4px' },
+      align: "center",
+      render: (text) => <span style={{ fontSize: '14px' }}>{text}</span>,
     },
     {
       title: "Acción",
       dataIndex: "action",
       key: "action",
-      style: { padding: '4px' },
+      align: "center",
+      render: (text) => {
+        let color = "";
+        switch (text) {
+          case "Creación":
+            color = "green";
+            break;
+          case "Publicación":
+            color = "blue";
+            break;
+          case "Compra":
+            color = "red";
+            break;
+          case "Transferencia":
+            color = "yellow";
+            break;
+          default:
+            color = "default";
+        }
+        return (
+          <Tag color={color} style={{ padding: '2px 10px', fontSize: '12px' }}>
+            {text}
+          </Tag>
+        );
+      },
     },
   ];
 
@@ -128,14 +152,16 @@ const NFTDetails = () => {
           columns={columns}
           dataSource={transactions}
           rowKey="transactionHash"
-          pagination={{ pageSize: 5 }}
-          bordered
+          pagination={{ pageSize: 10 }}
+          bordered={false}
           locale={{ emptyText: "No se encontraron transacciones para este NFT." }}
+          style={{ fontSize: '14px', borderRadius: '8px', overflow: 'hidden' }}
+          rowClassName={(record, index) => (index % 2 === 0 ? 'table-row-light' : 'table-row-dark')}
         />
       </div>
-      <style jsx>{`
+      <style jsx global>{`
         .transaction-history {
-          width: 80%;
+          width: 90%;
           margin: 0 auto;
           margin-top: 2rem;
         }
@@ -146,9 +172,45 @@ const NFTDetails = () => {
           text-align: center;
         }
 
+        .table-row-light {
+          background-color: #f9f9f9;
+        }
+
+        .table-row-dark {
+          background-color: #ffffff;
+        }
+
+        .ant-table-wrapper .ant-table-cell,
+        .ant-table-wrapper .ant-table-thead > tr > th,
+        .ant-table-wrapper .ant-table-tbody > tr > th,
+        .ant-table-wrapper .ant-table-tbody > tr > td,
+        .ant-table-wrapper tfoot > tr > th,
+        .ant-table-wrapper tfoot > tr > td {
+          padding: 4px !important;
+        }
+
+        .ant-table-thead > tr > th {
+          background-color: transparent !important;
+          font-weight: bold;
+          text-align: center;
+          border-bottom: 1px solid #e8e8e8;
+        }
+
+        .ant-table-cell {
+          border-right: none !important;
+        }
+
+        .ant-table-row {
+          transition: background 0.3s;
+        }
+
+        .ant-table-row:hover {
+          background-color: #e6f7ff;
+        }
+
         @media screen and (max-width: 50em) {
           .transaction-history {
-            width: 90%;
+            width: 100%;
           }
         }
       `}</style>
