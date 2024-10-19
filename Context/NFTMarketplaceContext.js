@@ -409,6 +409,41 @@ export const NFTMarketplaceProvider = ({ children }) => {
     }
   };
 
+  const getNFTTransactionHistory = async (tokenId) => {
+    try {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const contract = new ethers.Contract(
+        NFTMarketplaceAddress,
+        NFTMarketplaceABI,
+        provider
+      );
+  
+      // Filtra eventos Transfer sin tokenId específico
+      const transferEvents = await contract.queryFilter(
+        contract.filters.Transfer()
+      );
+  
+      // Filtra solo las transacciones relevantes para el tokenId proporcionado
+      const history = transferEvents
+        .filter((event) => event.args[2].toString() === tokenId)
+        .map((event) => {
+          return {
+            from: event.args[0],
+            to: event.args[1],
+            transactionHash: event.transactionHash,
+            blockNumber: event.blockNumber,
+          };
+        });
+
+        console.log("Transaction History:", history);
+  
+      return history;
+    } catch (error) {
+      console.error("Error fetching transaction history: ", error);
+      return [];
+    }
+  };
+
   return (
     <NFTMarketplaceContext.Provider
       value={{
@@ -431,6 +466,7 @@ export const NFTMarketplaceProvider = ({ children }) => {
         getAllDigitalAssets,
         getTokenIdCounter,
         getItemsSoldCounter,
+        getNFTTransactionHistory,
       }}
     >
       {children}
