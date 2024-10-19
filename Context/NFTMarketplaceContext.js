@@ -129,11 +129,17 @@ export const NFTMarketplaceProvider = ({ children }) => {
   };
 
   //---CREATENFT FUNCTION
-  const createNFT = async (name, price, image, description, router) => {
+  const createNFT = async (name, price, image, description, website, router) => {
     if (!name || !description || !price || !image)
       return setError("La información se encuentra incompleta"), setOpenError(true);
 
-    const data = JSON.stringify({ name, description, image });
+    const dataToStringify = { name, description, image };
+
+    if (website) {
+      dataToStringify.website = website;
+    }
+
+    const data = JSON.stringify(dataToStringify);
 
     try {
       const response = await axios({
@@ -141,8 +147,8 @@ export const NFTMarketplaceProvider = ({ children }) => {
         url: "https://api.pinata.cloud/pinning/pinJSONToIPFS",
         data: data,
         headers: {
-          pinata_api_key: `d8c2c12c94c2f96e41a2`,
-          pinata_secret_api_key: `b5ee13f9407bf0688c082aa9fd54449a2d4b2b05a73bfbe05bca731f7fcbd607`,
+          pinata_api_key: `b0376a909e2365f6df5d`,
+          pinata_secret_api_key: `dc1af3b8b3a7aed7f21c087a360f08700dbcc4eec5789b8a8fab3671cd127111`,
           "Content-Type": "application/json",
         },
       });
@@ -151,7 +157,7 @@ export const NFTMarketplaceProvider = ({ children }) => {
       console.log(url);
 
       await createSale(url, price);
-      router.push("/searchPage");
+      router.push("/author");
     } catch (error) {
       setError("Ha ocurrido un error al registrar el activo digital");
       setOpenError(true);
@@ -231,7 +237,7 @@ export const NFTMarketplaceProvider = ({ children }) => {
               const tokenURI = await contract.tokenURI(tokenId);
 
               const {
-                data: { image, name, description },
+                data: { image, name, description, website },
               } = await axios.get(tokenURI, {});
               const price = ethers.utils.formatUnits(
                 unformattedPrice.toString(),
@@ -246,6 +252,7 @@ export const NFTMarketplaceProvider = ({ children }) => {
                 image,
                 name,
                 description,
+                website,
                 tokenURI,
               };
             }
@@ -280,7 +287,7 @@ export const NFTMarketplaceProvider = ({ children }) => {
             async ({ tokenId, seller, owner, price: unformattedPrice }) => {
               const tokenURI = await contract.tokenURI(tokenId);
               const {
-                data: { image, name, description },
+                data: { image, name, description, website },
               } = await axios.get(tokenURI);
               const price = ethers.utils.formatUnits(
                 unformattedPrice.toString(),
@@ -295,6 +302,7 @@ export const NFTMarketplaceProvider = ({ children }) => {
                 image,
                 name,
                 description,
+                website,
                 tokenURI,
               };
             }
@@ -330,6 +338,77 @@ export const NFTMarketplaceProvider = ({ children }) => {
     }
   };
 
+  // 1. Obtener todos los activos digitales registrados
+  const getAllDigitalAssets = async () => {
+    try {
+      const contract = await connectingWithSmartContract();
+      const data = await contract.getAllDigitalAssets();
+
+      const items = await Promise.all(
+        data.map(
+          async ({ tokenId, seller, owner, price, sold }) => {
+            const tokenURI = await contract.tokenURI(tokenId);
+            const {
+              data: { image, name, description, website },
+            } = await axios.get(tokenURI);
+
+            const formattedPrice = ethers.utils.formatUnits(
+              price.toString(),
+              "ether"
+            );
+
+            return {
+              tokenId: tokenId.toNumber(),
+              seller,
+              owner,
+              price: formattedPrice,
+              sold,
+              name,
+              description,
+              image,
+              website,
+              tokenURI,
+            };
+          }
+        )
+      );
+      console.log("All Digital Assets:", items);
+      return items;
+    } catch (error) {
+      setError("Ha ocurrido un error al obtener todos los activos digitales");
+      setOpenError(true);
+      console.log(error);
+    }
+  };
+
+  // 2. Obtener el valor del contador de IDs de tokens
+  const getTokenIdCounter = async () => {
+    try {
+      const contract = await connectingWithSmartContract();
+      const tokenIdCounter = await contract.getTokenIdCounter();
+      console.log("Token ID Counter:", tokenIdCounter.toNumber());
+      return tokenIdCounter.toNumber();
+    } catch (error) {
+      setError("Ha ocurrido un error al obtener el contador de IDs de tokens");
+      setOpenError(true);
+      console.log(error);
+    }
+  };
+
+  // 3. Obtener el valor del contador de ítems vendidos
+  const getItemsSoldCounter = async () => {
+    try {
+      const contract = await connectingWithSmartContract();
+      const itemsSoldCounter = await contract.getItemsSoldCounter();
+      console.log("Items Sold Counter:", itemsSoldCounter.toNumber());
+      return itemsSoldCounter.toNumber();
+    } catch (error) {
+      setError("Ha ocurrido un error al obtener el contador de ítems vendidos");
+      setOpenError(true);
+      console.log(error);
+    }
+  };
+
   return (
     <NFTMarketplaceContext.Provider
       value={{
@@ -349,6 +428,9 @@ export const NFTMarketplaceProvider = ({ children }) => {
         openError,
         error,
         accountBalance,
+        getAllDigitalAssets,
+        getTokenIdCounter,
+        getItemsSoldCounter,
       }}
     >
       {children}

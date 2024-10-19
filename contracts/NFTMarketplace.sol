@@ -161,7 +161,6 @@ contract NFTMarketplace is ERC721URIStorage {
         idToMarketItem[tokenId].owner = payable(recipient);
         idToMarketItem[tokenId].seller = payable(address(0));
         idToMarketItem[tokenId].sold = true;
-        _itemsSold.increment();
 
         _transfer(msg.sender, recipient, tokenId);
     }
@@ -235,6 +234,29 @@ contract NFTMarketplace is ERC721URIStorage {
     // Añadir esta función en tu contrato NFTMarketplace
     function getMarketItem(uint256 tokenId) public view returns (MarketItem memory) {
         return idToMarketItem[tokenId];
+    }
+
+    // 1. Obtener todos los activos digitales registrados
+    function getAllDigitalAssets() public view returns (MarketItem[] memory) {
+        uint256 totalItemCount = _tokenIds.current();
+        MarketItem[] memory items = new MarketItem[](totalItemCount);
+
+        for (uint256 i = 0; i < totalItemCount; i++) {
+            uint256 currentId = i + 1;
+            MarketItem storage currentItem = idToMarketItem[currentId];
+            items[i] = currentItem;
+        }
+        return items;
+    }
+
+    // 2. Obtener el valor del contador de IDs de tokens
+    function getTokenIdCounter() public view returns (uint256) {
+        return _tokenIds.current();
+    }
+
+    // 3. Obtener el valor del contador de ítems vendidos
+    function getItemsSoldCounter() public view returns (uint256) {
+        return _itemsSold.current();
     }
 
 }

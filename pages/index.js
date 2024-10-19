@@ -15,7 +15,7 @@ import {
 import { NFTMarketplaceContext } from "../Context/NFTMarketplaceContext";
 
 const Home = () => {
-  const { checkIfWalletConnected, currentAccount } = useContext(
+  const { checkIfWalletConnected, currentAccount, getAllDigitalAssets, getTokenIdCounter, getItemsSoldCounter, } = useContext(
     NFTMarketplaceContext
   );
 
@@ -25,6 +25,10 @@ const Home = () => {
 
   useEffect(() => {
     checkIfWalletConnected();
+
+    getAllDigitalAssets();
+    getTokenIdCounter();
+    getItemsSoldCounter();
   }, []);
 
   const { fetchNFTs } = useContext(NFTMarketplaceContext);
