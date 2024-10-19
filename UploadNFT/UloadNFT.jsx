@@ -83,7 +83,7 @@ const UloadNFT = ({ uploadToIPFS, createNFT, uploadToPinata }) => {
                 <AiTwotonePropertySafety />
               </div>
               <input
-                type="text"
+                type="number"
                 placeholder="Ingresa el precio del activo digital"
                 onChange={(e) => setPrice(e.target.value)}
               />

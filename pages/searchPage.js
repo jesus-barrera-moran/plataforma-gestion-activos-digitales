@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from "react";
 
 //INTERNAL IMPORT
 import Style from "../styles/searchPage.module.css";
-import { Slider, Brand, Loader } from "../components/componentsindex";
+import { Loader } from "../components/componentsindex";
 import { SearchBar } from "../SearchPage/searchBarIndex";
 import { Filter } from "../components/componentsindex";
 import { NFTCardTwo, Banner } from "../collectionPage/collectionIndex";
@@ -42,19 +42,13 @@ const searchPage = () => {
   }, [currentAccount]);
 
   const onHandleSearch = (value) => {
-    const filteredNFTS = nfts?.filter(({ name }) =>
-      name.toLowerCase().includes(value.toLowerCase())
-    );
-
-    if (filteredNFTS.length === 0) {
-      setNfts(nftsCopy);
-    } else {
+    if (value) {
+      const filteredNFTS = nftsCopy?.filter(({ name }) =>
+        name.toLowerCase().includes(value.toLowerCase())
+      );
+  
       setNfts(filteredNFTS);
-    }
-  };
-
-  const onClearSearch = () => {
-    if (nfts?.length && nftsCopy.length) {
+    } else {
       setNfts(nftsCopy);
     }
   };
@@ -62,7 +56,7 @@ const searchPage = () => {
   return (
     <div className={Style.searchPage}>
       <Banner bannerImage={images.creatorbackground2} />
-      <SearchBar onHandleSearch={onHandleSearch} onClearSearch={onClearSearch} />
+      <SearchBar onHandleSearch={onHandleSearch} />
       <Filter />
 
       {loading ? (
