@@ -59,7 +59,7 @@ const Home = () => {
       {loading ? (
         // Show Loader while loading is true
         <Loader />
-      ) : nfts.length === 0 ? (
+      ) : nfts?.length === 0 ? (
         // Styled message when no NFTs are available
         <div className={Style.noItemsMessage}>
           <h2>No hay elementos a la venta en este momento</h2>
