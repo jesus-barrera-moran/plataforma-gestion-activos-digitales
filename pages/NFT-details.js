@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useRouter } from "next/router";
-import { Table, Tag, Button, Modal } from "antd";
-import { EyeOutlined } from '@ant-design/icons';
+import { Table, Button, Modal, Tooltip, message } from "antd";
+import { EyeOutlined, CopyOutlined } from '@ant-design/icons';
 import { NFTMarketplaceAddress } from "../Context/constants";
 import { saveAs } from "file-saver";
 import Papa from "papaparse";
@@ -114,6 +114,12 @@ const NFTDetails = () => {
     saveAs(blob, `historial_transacciones_${nft.tokenId}.csv`);
   };
 
+  // Función para copiar al portapapeles y mostrar un mensaje
+  const copyToClipboard = (text) => {
+    navigator.clipboard.writeText(text);
+    message.success("Copiado al portapapeles");
+  };
+
   // Abrir el modal con los detalles de la transacción
   const showTransactionDetails = (transaction) => {
     setSelectedTransaction(transaction);
@@ -147,14 +153,19 @@ const NFTDetails = () => {
       key: "transactionHash",
       align: "left",
       render: (text) => (
-        <a
-          href={`https://etherscan.io/tx/${text}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{ fontSize: '14px', color: '#1890ff' }}
-        >
-          {text.substring(0, 20)}...
-        </a>
+        <Tooltip title={text}>
+          <span style={{ display: 'inline-flex', alignItems: 'center' }}>
+            <a
+              href={`https://etherscan.io/tx/${text}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ fontSize: '14px', color: '#1890ff', marginRight: '8px' }}
+            >
+              {text.substring(0, 10)}...{text.slice(-10)}
+            </a>
+            <CopyOutlined onClick={() => copyToClipboard(text)} style={{ cursor: 'pointer', color: '#1890ff' }} />
+          </span>
+        </Tooltip>
       ),
     },
     {
@@ -193,9 +204,14 @@ const NFTDetails = () => {
       key: "from",
       align: "left",
       render: (text) => (
-        <span style={{ fontSize: '14px', color: '#1890ff' }}>
-          {text.length > 15 ? `${text.substring(0, 15)}...` : text}
-        </span>
+        <Tooltip title={text}>
+          <span style={{ display: 'inline-flex', alignItems: 'center' }}>
+            <span style={{ fontSize: '14px', color: '#1890ff', marginRight: '8px' }}>
+              {text.length > 15 ? `${text.substring(0, 10)}...${text.slice(-10)}` : text}
+            </span>
+            <CopyOutlined onClick={() => copyToClipboard(text)} style={{ cursor: 'pointer', color: '#1890ff' }} />
+          </span>
+        </Tooltip>
       ),
     },
     {
@@ -204,9 +220,14 @@ const NFTDetails = () => {
       key: "to",
       align: "left",
       render: (text) => (
-        <span style={{ fontSize: '14px', color: '#1890ff' }}>
-          {text.length > 15 ? `${text.substring(0, 15)}...` : text}
-        </span>
+        <Tooltip title={text}>
+          <span style={{ display: 'inline-flex', alignItems: 'center' }}>
+            <span style={{ fontSize: '14px', color: '#1890ff', marginRight: '8px' }}>
+              {text.length > 15 ? `${text.substring(0, 10)}...${text.slice(-10)}` : text}
+            </span>
+            <CopyOutlined onClick={() => copyToClipboard(text)} style={{ cursor: 'pointer', color: '#1890ff' }} />
+          </span>
+        </Tooltip>
       ),
     },
     {
