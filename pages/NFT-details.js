@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useRouter } from "next/router";
-import { Table, Tag, Button } from "antd";
+import { Table, Tag, Button, Modal } from "antd";
 import { EyeOutlined } from '@ant-design/icons';
 import { NFTMarketplaceAddress } from "../Context/constants";
 import { saveAs } from "file-saver";
@@ -25,6 +25,8 @@ const NFTDetails = () => {
   });
 
   const [transactions, setTransactions] = useState([]);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [selectedTransaction, setSelectedTransaction] = useState(null);
 
   const router = useRouter();
 
@@ -112,6 +114,18 @@ const NFTDetails = () => {
     saveAs(blob, `historial_transacciones_${nft.tokenId}.csv`);
   };
 
+  // Abrir el modal con los detalles de la transacción
+  const showTransactionDetails = (transaction) => {
+    setSelectedTransaction(transaction);
+    setIsModalVisible(true);
+  };
+
+  // Cerrar el modal
+  const closeModal = () => {
+    setIsModalVisible(false);
+    setSelectedTransaction(null);
+  };
+
   // Columnas de la tabla con estilo similar al de la imagen
   const columns = [
     {
@@ -119,7 +133,13 @@ const NFTDetails = () => {
       dataIndex: "view",
       key: "view",
       align: "center",
-      render: () => <EyeOutlined style={{ fontSize: "16px", color: "#1890ff" }} />,
+      render: (_, record) => (
+        <Button
+          type="link"
+          icon={<EyeOutlined style={{ fontSize: "16px", color: "#1890ff" }} />}
+          onClick={() => showTransactionDetails(record)}
+        />
+      ),
     },
     {
       title: "Hash de Transacción",
@@ -216,6 +236,27 @@ const NFTDetails = () => {
           style={{ fontSize: '14px', borderRadius: '8px', overflow: 'hidden' }}
           rowClassName={(record, index) => (index % 2 === 0 ? 'table-row-light' : 'table-row-dark')}
         />
+
+        {/* Modal de Detalles de la Transacción */}
+        <Modal
+          title="Detalles de la Transacción"
+          visible={isModalVisible}
+          onCancel={closeModal}
+          footer={null}
+        >
+          {selectedTransaction && (
+            <div>
+              <p><strong>Hash de Transacción:</strong> {selectedTransaction.transactionHash}</p>
+              <p><strong>Método:</strong> {selectedTransaction.metodo}</p>
+              <p><strong>Bloque:</strong> {selectedTransaction.blockNumber}</p>
+              <p><strong>Edad:</strong> {selectedTransaction.relativeTime}</p>
+              <p><strong>De:</strong> {selectedTransaction.from}</p>
+              <p><strong>Para:</strong> {selectedTransaction.to}</p>
+              <p><strong>Item:</strong> #{selectedTransaction.tokenId}</p>
+              <p><strong>Fecha y Hora:</strong> {selectedTransaction.formattedTimestamp}</p>
+            </div>
+          )}
+        </Modal>
       </div>
       <style jsx global>{`
         .transaction-history {
