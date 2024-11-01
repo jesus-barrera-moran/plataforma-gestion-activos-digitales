@@ -424,18 +424,36 @@ export const NFTMarketplaceProvider = ({ children }) => {
       );
   
       // Filtra solo las transacciones relevantes para el tokenId proporcionado
-      const history = transferEvents
-        .filter((event) => event.args[2].toString() === tokenId)
-        .map((event) => {
-          return {
-            from: event.args[0],
-            to: event.args[1],
-            transactionHash: event.transactionHash,
-            blockNumber: event.blockNumber,
-          };
-        });
-
-        console.log("Transaction History:", history);
+      const history = await Promise.all(
+        transferEvents
+          .filter((event) => event.args[2].toString() === tokenId)
+          .map(async (event) => {
+            // Obtener el bloque para la marca de tiempo
+            const block = await provider.getBlock(event.blockNumber);
+            const timestamp = block.timestamp * 1000; // Convertir a milisegundos para formatear como fecha
+  
+            // Determinar el precio solo si la transacción es de tipo "Compra" o "Publicación"
+            let price = null;
+            if (
+              event.args[1].toLowerCase() === NFTMarketplaceAddress.toLowerCase() || // Publicación
+              event.args[0].toLowerCase() === NFTMarketplaceAddress.toLowerCase()    // Compra
+            ) {
+              const marketItem = await contract.getMarketItem(tokenId);
+              price = ethers.utils.formatEther(marketItem.price);
+            }
+  
+            return {
+              from: event.args[0],
+              to: event.args[1],
+              transactionHash: event.transactionHash,
+              blockNumber: event.blockNumber,
+              timestamp,
+              price,
+            };
+          })
+      );
+  
+      console.log("Transaction History:", history);
   
       return history;
     } catch (error) {

@@ -46,6 +46,7 @@ const NFTDetails = () => {
               from: tx.from?.toLowerCase() === NFTMarketplaceAddress?.toLowerCase() ? "Mercado" : tx.from,
               to: tx.to?.toLowerCase() === NFTMarketplaceAddress?.toLowerCase() ? "Mercado" : tx.to,
               action: determineAction(tx, NFTMarketplaceAddress),
+              formattedTimestamp: tx.timestamp ? new Date(tx.timestamp).toLocaleString() : "N/A",
             }));
 
           setTransactions(sortedHistory);
@@ -89,6 +90,13 @@ const NFTDetails = () => {
       render: (text) => <span style={{ fontSize: '14px' }}>{text}</span>,
     },
     {
+      title: "Fecha y Hora",
+      dataIndex: "formattedTimestamp",
+      key: "timestamp",
+      align: "center",
+      render: (text) => <span style={{ fontSize: '14px' }}>{text}</span>,
+    },
+    {
       title: "Hash de Transacción",
       dataIndex: "transactionHash",
       key: "transactionHash",
@@ -105,7 +113,7 @@ const NFTDetails = () => {
       ),
     },
     {
-      title: "Número de Bloque",
+      title: "Bloque",
       dataIndex: "blockNumber",
       key: "blockNumber",
       align: "center",
