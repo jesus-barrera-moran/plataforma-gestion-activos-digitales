@@ -223,9 +223,6 @@ const NFTDetails = () => {
       <NFTDetailsPage nft={nft} />
       <div className="transaction-history">
         <h2>Historial de Transacciones</h2>
-        <Button onClick={downloadCSV} type="primary" style={{ marginBottom: '1rem' }}>
-          Descargar CSV
-        </Button>
         <Table
           columns={columns}
           dataSource={transactions}
@@ -236,6 +233,13 @@ const NFTDetails = () => {
           style={{ fontSize: '14px', borderRadius: '8px', overflow: 'hidden' }}
           rowClassName={(record, index) => (index % 2 === 0 ? 'table-row-light' : 'table-row-dark')}
         />
+
+        {/* Botón de descarga estilo "CSV Export" */}
+        <div className="download-section">
+          [ Descarga: <Button onClick={downloadCSV} type="link" style={{ color: '#1890ff' }}>
+            <span style={{ textDecoration: 'underline' }}>Exportar CSV</span>
+          </Button> ]
+        </div>
 
         {/* Modal de Detalles de la Transacción */}
         <Modal
@@ -269,6 +273,14 @@ const NFTDetails = () => {
           margin-bottom: 1rem;
           font-size: 24px;
           text-align: center;
+        }
+
+        .download-section {
+          font-size: 12px;
+          text-align: right;
+          margin-top: 10px;
+          padding-right: 0;
+          padding-left: 0;
         }
 
         .table-row-light {
