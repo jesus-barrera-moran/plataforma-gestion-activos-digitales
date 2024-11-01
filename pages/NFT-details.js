@@ -341,9 +341,52 @@ const NFTDetails = () => {
     saveAs(blob, `Certificado_Verificacion_${nft.tokenId}.json`);
   };
 
+  // Función para descargar el certificado de verificación en JSON
+  const downloadCertificate = () => {
+    const certificateData = {
+      certificado: certificateHash,
+      fecha: new Date().toLocaleString(),
+      tokenId: nft.tokenId,
+    };
+
+    const blob = new Blob([JSON.stringify(certificateData, null, 2)], { type: "application/json" });
+    saveAs(blob, `Certificado_${nft.tokenId}.json`);
+  };
+
   return (
     <div className="NFTDetailsPage">
       <NFTDetailsPage nft={nft} />
+
+      {/* Sección del Certificado de Verificación */}
+      <div className="certificate-section" style={{ marginTop: "20px", padding: "20px", backgroundColor: "#f9f9f9", borderRadius: "8px", boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)" }}>
+        <h3 style={{ color: "#1890ff", fontSize: "20px", fontWeight: "600", marginBottom: "8px" }}>Certificado de Verificación</h3>
+        
+        {/* Mostrar el Hash del Certificado */}
+        <p style={{ fontSize: "16px", color: "#333", marginBottom: "8px" }}><strong>Hash del Certificado:</strong></p>
+        <div style={{ display: "flex", alignItems: "center", marginBottom: "15px" }}>
+          <span style={{ color: "#555", fontSize: "15px", marginRight: "8px" }}>
+            {certificateHash ? `${certificateHash.substring(0, 15)}...${certificateHash.slice(-15)}` : "No disponible"}
+          </span>
+          <Tooltip title="Copiar Hash del Certificado">
+            <Button
+              type="link"
+              onClick={() => copyToClipboard(certificateHash)}
+              icon={<CopyOutlined />}
+              style={{ color: "#1890ff" }}
+            />
+          </Tooltip>
+        </div>
+
+        {/* Botón para Descargar el Certificado en JSON */}
+        <Button
+          type="primary"
+          icon={<DownloadOutlined />}
+          onClick={downloadCertificate}
+          style={{ fontWeight: "bold", backgroundColor: "#1890ff", borderColor: "#1890ff" }}
+        >
+          Descargar Certificado en JSON
+        </Button>
+      </div>
 
       <div className="verification-section">
         <h2>Verificación de Autenticidad</h2>
@@ -505,6 +548,14 @@ const NFTDetails = () => {
         </Modal>
       </div>
       <style jsx global>{`
+        .certificate-section {
+          margin-top: 20px;
+          padding: 20px;
+          background-color: #f9f9f9;
+          border-radius: 8px;
+          box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
         .verification-section {
           text-align: center;
           margin: 20px 0;
