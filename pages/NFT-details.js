@@ -48,8 +48,8 @@ const NFTDetails = () => {
             .sort((a, b) => b.blockNumber - a.blockNumber)
             .map((tx) => ({
               ...tx,
-              from: tx.from?.toLowerCase() === NFTMarketplaceAddress?.toLowerCase() ? "Mercado" : tx.from,
-              to: tx.to?.toLowerCase() === NFTMarketplaceAddress?.toLowerCase() ? "Mercado" : tx.to,
+              fromDisplay: tx.from?.toLowerCase() === NFTMarketplaceAddress?.toLowerCase() ? "Mercado" : tx.from, // Visualización
+              toDisplay: tx.to?.toLowerCase() === NFTMarketplaceAddress?.toLowerCase() ? "Mercado" : tx.to,       // Visualización
               metodo: determineMethod(tx, NFTMarketplaceAddress),
               formattedTimestamp: tx.timestamp ? new Date(tx.timestamp).toLocaleString() : "N/A",
               relativeTime: tx.timestamp ? formatTimeAgo(tx.timestamp) : "N/A"
@@ -105,8 +105,8 @@ const NFTDetails = () => {
       Método: tx.metodo,
       "Bloque": tx.blockNumber,
       "Fecha y Hora": tx.formattedTimestamp,
-      De: tx.from,
-      Para: tx.to,
+      De: tx.from, // Dirección real para el CSV
+      Para: tx.to, // Dirección real para el CSV
     }));
 
     const csv = Papa.unparse(csvData);
@@ -200,32 +200,32 @@ const NFTDetails = () => {
     },
     {
       title: "De",
-      dataIndex: "from",
+      dataIndex: "fromDisplay",
       key: "from",
       align: "left",
-      render: (text) => (
-        <Tooltip title={text}>
+      render: (text, record) => (
+        <Tooltip title={record.from}> {/* Mostrar dirección real en el tooltip */}
           <span style={{ display: 'inline-flex', alignItems: 'center' }}>
             <span style={{ fontSize: '14px', color: '#1890ff', marginRight: '8px' }}>
               {text.length > 15 ? `${text.substring(0, 10)}...${text.slice(-10)}` : text}
             </span>
-            <CopyOutlined onClick={() => copyToClipboard(text)} style={{ cursor: 'pointer', color: '#1890ff' }} />
+            <CopyOutlined onClick={() => copyToClipboard(record.from)} style={{ cursor: 'pointer', color: '#1890ff' }} />
           </span>
         </Tooltip>
       ),
     },
     {
       title: "Para",
-      dataIndex: "to",
+      dataIndex: "toDisplay",
       key: "to",
       align: "left",
-      render: (text) => (
-        <Tooltip title={text}>
+      render: (text, record) => (
+        <Tooltip title={record.to}> {/* Mostrar dirección real en el tooltip */}
           <span style={{ display: 'inline-flex', alignItems: 'center' }}>
             <span style={{ fontSize: '14px', color: '#1890ff', marginRight: '8px' }}>
               {text.length > 15 ? `${text.substring(0, 10)}...${text.slice(-10)}` : text}
             </span>
-            <CopyOutlined onClick={() => copyToClipboard(text)} style={{ cursor: 'pointer', color: '#1890ff' }} />
+            <CopyOutlined onClick={() => copyToClipboard(record.to)} style={{ cursor: 'pointer', color: '#1890ff' }} />
           </span>
         </Tooltip>
       ),
