@@ -196,7 +196,11 @@ const NFTDetails = () => {
       dataIndex: "relativeTime",
       key: "relativeTime",
       align: "center",
-      render: (text) => <span style={{ fontSize: '14px' }}>{text}</span>,
+      render: (text, record) => (
+        <Tooltip title={record.formattedTimestamp}> {/* Tooltip con fecha y hora completa */}
+          <span style={{ fontSize: '14px' }}>{text}</span>
+        </Tooltip>
+      ),
     },
     {
       title: "De",
