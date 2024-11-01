@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useRouter } from "next/router";
 import { Table, Tag, Button } from "antd";
+import { EyeOutlined } from '@ant-design/icons';
 import { NFTMarketplaceAddress } from "../Context/constants";
 import { saveAs } from "file-saver";
 import Papa from "papaparse";
@@ -47,8 +48,9 @@ const NFTDetails = () => {
               ...tx,
               from: tx.from?.toLowerCase() === NFTMarketplaceAddress?.toLowerCase() ? "Mercado" : tx.from,
               to: tx.to?.toLowerCase() === NFTMarketplaceAddress?.toLowerCase() ? "Mercado" : tx.to,
-              action: determineAction(tx, NFTMarketplaceAddress),
+              metodo: determineMethod(tx, NFTMarketplaceAddress),
               formattedTimestamp: tx.timestamp ? new Date(tx.timestamp).toLocaleString() : "N/A",
+              relativeTime: tx.timestamp ? formatTimeAgo(tx.timestamp) : "N/A"
             }));
 
           setTransactions(sortedHistory);
@@ -61,8 +63,27 @@ const NFTDetails = () => {
     fetchTransactionHistory();
   }, [nft.tokenId, getNFTTransactionHistory, NFTMarketplaceAddress]);
 
-  // Lógica para determinar la acción basada en la transacción
-  const determineAction = (tx, NFTMarketplaceAddress) => {
+  // Función para calcular el tiempo transcurrido
+  const formatTimeAgo = (timestamp) => {
+    const seconds = Math.floor((new Date() - new Date(timestamp)) / 1000);
+    const intervals = [
+      { label: 'año', seconds: 31536000 },
+      { label: 'mes', seconds: 2592000 },
+      { label: 'día', seconds: 86400 },
+      { label: 'hora', seconds: 3600 },
+      { label: 'minuto', seconds: 60 },
+    ];
+    for (const interval of intervals) {
+      const count = Math.floor(seconds / interval.seconds);
+      if (count >= 1) {
+        return `hace ${count} ${interval.label}${count > 1 ? 's' : ''}`;
+      }
+    }
+    return "ahora";
+  };
+
+  // Lógica para determinar el método basado en la transacción
+  const determineMethod = (tx, NFTMarketplaceAddress) => {
     if (tx.from === "0x0000000000000000000000000000000000000000") {
       return "Creación";
     }
@@ -81,9 +102,9 @@ const NFTDetails = () => {
       De: tx.from,
       Para: tx.to,
       "Fecha y Hora": tx.formattedTimestamp,
-      "Hash de Transaccion": tx.transactionHash,
+      "Hash de Transacción": tx.transactionHash,
       "Bloque": tx.blockNumber,
-      "Acción": tx.action,
+      Método: tx.metodo,
     }));
 
     const csv = Papa.unparse(csvData);
@@ -91,28 +112,14 @@ const NFTDetails = () => {
     saveAs(blob, `historial_transacciones_${nft.tokenId}.csv`);
   };
 
-  // Definición de las columnas para la tabla de AntD
+  // Columnas de la tabla con estilo similar al de la imagen
   const columns = [
     {
-      title: "De",
-      dataIndex: "from",
-      key: "from",
-      align: "left",
-      render: (text) => <span style={{ fontSize: '14px' }}>{text}</span>,
-    },
-    {
-      title: "Para",
-      dataIndex: "to",
-      key: "to",
-      align: "left",
-      render: (text) => <span style={{ fontSize: '14px' }}>{text}</span>,
-    },
-    {
-      title: "Fecha y Hora",
-      dataIndex: "formattedTimestamp",
-      key: "timestamp",
+      title: <EyeOutlined />,
+      dataIndex: "view",
+      key: "view",
       align: "center",
-      render: (text) => <span style={{ fontSize: '14px' }}>{text}</span>,
+      render: () => <EyeOutlined style={{ fontSize: "16px", color: "#1890ff" }} />,
     },
     {
       title: "Hash de Transacción",
@@ -131,41 +138,63 @@ const NFTDetails = () => {
       ),
     },
     {
+      title: "Método",
+      dataIndex: "metodo",
+      key: "metodo",
+      align: "center",
+      render: (text) => <Button size="small" style={{ color: "#1890ff", border: "1px solid #1890ff" }}>{text}</Button>,
+    },
+    {
       title: "Bloque",
       dataIndex: "blockNumber",
       key: "blockNumber",
       align: "center",
+      render: (text) => (
+        <a
+          href={`https://etherscan.io/block/${text}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{ fontSize: '14px', color: '#1890ff' }}
+        >
+          {text}
+        </a>
+      ),
+    },
+    {
+      title: "Edad",
+      dataIndex: "relativeTime",
+      key: "relativeTime",
+      align: "center",
       render: (text) => <span style={{ fontSize: '14px' }}>{text}</span>,
     },
     {
-      title: "Acción",
-      dataIndex: "action",
-      key: "action",
+      title: "De",
+      dataIndex: "from",
+      key: "from",
+      align: "left",
+      render: (text) => (
+        <span style={{ fontSize: '14px', color: '#1890ff' }}>
+          {text.length > 15 ? `${text.substring(0, 15)}...` : text}
+        </span>
+      ),
+    },
+    {
+      title: "Para",
+      dataIndex: "to",
+      key: "to",
+      align: "left",
+      render: (text) => (
+        <span style={{ fontSize: '14px', color: '#1890ff' }}>
+          {text.length > 15 ? `${text.substring(0, 15)}...` : text}
+        </span>
+      ),
+    },
+    {
+      title: "Item",
+      dataIndex: "tokenId",
+      key: "item",
       align: "center",
-      render: (text) => {
-        let color = "";
-        switch (text) {
-          case "Creación":
-            color = "green";
-            break;
-          case "Publicación":
-            color = "blue";
-            break;
-          case "Compra":
-            color = "red";
-            break;
-          case "Transferencia":
-            color = "yellow";
-            break;
-          default:
-            color = "default";
-        }
-        return (
-          <Tag color={color} style={{ padding: '2px 10px', fontSize: '12px' }}>
-            {text}
-          </Tag>
-        );
-      },
+      render: (text) => <span style={{ fontSize: '14px' }}>#{text}</span>,
     },
   ];
 
