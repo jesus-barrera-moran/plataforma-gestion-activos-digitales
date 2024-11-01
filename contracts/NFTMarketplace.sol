@@ -23,6 +23,7 @@ contract NFTMarketplace is ERC721URIStorage {
         address payable owner;
         uint256 price;
         bool sold;
+        bytes32 hash; // Nuevo campo para almacenar el hash de autenticidad
     }
 
     event MarketItemCreated(
@@ -30,7 +31,8 @@ contract NFTMarketplace is ERC721URIStorage {
         address seller,
         address owner,
         uint256 price,
-        bool sold
+        bool sold,
+        bytes32 hash // Nuevo campo para registrar el hash de autenticidad en el evento
     );
 
     modifier onlyOwner() {
@@ -64,7 +66,7 @@ contract NFTMarketplace is ERC721URIStorage {
     }
 
     // Crear token de activo digital
-    function createToken(string memory tokenURI, uint256 price)
+    function createToken(string memory tokenURI, uint256 price, bytes32 hash)
         public
         payable
         returns (uint256)
@@ -74,13 +76,13 @@ contract NFTMarketplace is ERC721URIStorage {
 
         _mint(msg.sender, newTokenId);
         _setTokenURI(newTokenId, tokenURI);
-        createMarketItem(newTokenId, price);
+        createMarketItem(newTokenId, price, hash); // Llamamos `createMarketItem` con el hash
         _itemsSold.increment();
         return newTokenId;
     }
 
     // Crear activo digital
-    function createMarketItem(uint256 tokenId, uint256 price) private {
+    function createMarketItem(uint256 tokenId, uint256 price, bytes32 hash) private {
         require(price > 0, "Price must be at least 1 wei");
         require(
             msg.value == listingPrice,
@@ -92,7 +94,8 @@ contract NFTMarketplace is ERC721URIStorage {
             payable(address(0)),
             payable(msg.sender),
             price,
-            false
+            false,
+            hash // Almacenamos el hash en el struct
         );
 
         // _transfer(msg.sender, address(this), tokenId);
@@ -101,7 +104,8 @@ contract NFTMarketplace is ERC721URIStorage {
             payable(address(0)),
             payable(msg.sender),
             price,
-            true
+            true,
+            hash // Emitimos el evento con el hash
         );
     }
 
@@ -258,6 +262,10 @@ contract NFTMarketplace is ERC721URIStorage {
     // 3. Obtener el valor del contador de ítems vendidos
     function getItemsSoldCounter() public view returns (uint256) {
         return _itemsSold.current();
+    }
+
+    function getCertificateHash(uint256 tokenId) public view returns (bytes32) {
+        return idToMarketItem[tokenId].hash;
     }
 
 }

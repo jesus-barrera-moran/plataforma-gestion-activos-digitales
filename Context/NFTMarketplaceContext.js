@@ -3,8 +3,9 @@ import Web3Modal from "web3modal";
 import { ethers } from "ethers";
 import { useRouter } from "next/router";
 import axios from "axios";
+import SHA256 from "crypto-js/sha256";
 
-//INTERNAL  IMPORT
+// INTERNAL IMPORT
 import {
   NFTMarketplaceAddress,
   NFTMarketplaceABI,
@@ -47,8 +48,7 @@ export const NFTMarketplaceProvider = ({ children }) => {
   const [accountBalance, setAccountBalance] = useState("");
   const router = useRouter();
 
-  //---CHECK IF WALLET IS CONNECTD
-
+  //---CHECK IF WALLET IS CONNECTED
   const checkIfWalletConnected = async () => {
     try {
       if (!window.ethereum)
@@ -67,18 +67,14 @@ export const NFTMarketplaceProvider = ({ children }) => {
         setAccountBalance(bal);
         return accounts[0];
       } else {
-        // setError("No Account Found");
-        // setOpenError(true);
         console.log("No account");
       }
     } catch (error) {
-      // setError("Something wrong while connecting to wallet");
-      // setOpenError(true);
       console.log("Cartera digital no conectada");
     }
   };
 
-  //---CONNET WALLET FUNCTION
+  //---CONNECT WALLET FUNCTION
   const connectWallet = async () => {
     try {
       if (!window.ethereum)
@@ -128,7 +124,37 @@ export const NFTMarketplaceProvider = ({ children }) => {
     setOpenError(true);
   };
 
-  //---CREATENFT FUNCTION
+  // Genera el hash SHA-256 del archivo
+  const generateFileHash = async (file) => {
+    return new Promise((resolve, reject) => {
+      if (typeof file === "string") {
+        // Si file es una URL, descargamos el archivo y lo convertimos a Blob
+        fetch(file)
+          .then((response) => response.blob())
+          .then((blob) => {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+              const hash = SHA256(e.target.result).toString();
+              resolve(hash);
+            };
+            reader.onerror = (e) => reject(e);
+            reader.readAsArrayBuffer(blob); // Leer como ArrayBuffer
+          })
+          .catch((error) => reject(error));
+      } else {
+        // Si file ya es un Blob o File, proceder con el cálculo de hash
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const hash = SHA256(e.target.result).toString();
+          resolve(hash);
+        };
+        reader.onerror = (e) => reject(e);
+        reader.readAsArrayBuffer(file); // Leer como ArrayBuffer
+      }
+    });
+  };
+
+  //---CREATE NFT FUNCTION
   const createNFT = async (name, price, image, description, website, router) => {
     if (!name || !description || !price || !image)
       return setError("La información se encuentra incompleta"), setOpenError(true);
@@ -142,6 +168,8 @@ export const NFTMarketplaceProvider = ({ children }) => {
     const data = JSON.stringify(dataToStringify);
 
     try {
+      const hash = await generateFileHash(image);
+
       const response = await axios({
         method: "POST",
         url: "https://api.pinata.cloud/pinning/pinJSONToIPFS",
@@ -156,16 +184,17 @@ export const NFTMarketplaceProvider = ({ children }) => {
       const url = `https://gateway.pinata.cloud/ipfs/${response.data.IpfsHash}`;
       console.log(url);
 
-      await createSale(url, price);
+      await createSale(url, price, false, null, hash);
       router.push("/author");
     } catch (error) {
+      console.log(error);
       setError("Ha ocurrido un error al registrar el activo digital");
       setOpenError(true);
     }
   };
 
   //--- createSale FUNCTION
-  const createSale = async (url, formInputPrice, isReselling, id) => {
+  const createSale = async (url, formInputPrice, isReselling, id, hash) => {
     try {
       const price = ethers.utils.parseUnits(formInputPrice, "ether");
 
@@ -174,7 +203,7 @@ export const NFTMarketplaceProvider = ({ children }) => {
       const listingPrice = await contract.getListingPrice();
 
       const transaction = !isReselling
-        ? await contract.createToken(url, price, {
+        ? await contract.createToken(url, price, ethers.utils.arrayify("0x" + hash), { // Pasa hashBytes32 aquí
             value: listingPrice.toString(),
           })
         : await contract.resellToken(id, price, {
@@ -184,7 +213,7 @@ export const NFTMarketplaceProvider = ({ children }) => {
       await transaction.wait();
       console.log(transaction);
     } catch (error) {
-      setError("Ha ocurrido un error al listar el activo ditigal en el mercado");
+      setError("Ha ocurrido un error al listar el activo digital en el mercado");
       setOpenError(true);
       console.log(error);
     }
@@ -211,6 +240,19 @@ export const NFTMarketplaceProvider = ({ children }) => {
       router.push("/author");
     } catch (error) {
       setError("Ha ocurrido un error al transferir el activo digital");
+      setOpenError(true);
+      console.log(error);
+    }
+  };
+
+  //---FETCH NFT CERTIFICATE HASH FUNCTION
+  const getNFTCertificateHash = async (tokenId) => {
+    try {
+      const contract = await connectingWithSmartContract();
+      const hash = await contract.getCertificateHash(tokenId); // Assuming this function exists in the smart contract
+      return hash;
+    } catch (error) {
+      setError("Ha ocurrido un error al obtener el hash del certificado");
       setOpenError(true);
       console.log(error);
     }
@@ -485,6 +527,7 @@ export const NFTMarketplaceProvider = ({ children }) => {
         getTokenIdCounter,
         getItemsSoldCounter,
         getNFTTransactionHistory,
+        getNFTCertificateHash, // Added here
       }}
     >
       {children}

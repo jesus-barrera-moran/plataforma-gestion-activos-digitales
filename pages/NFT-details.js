@@ -13,7 +13,7 @@ import NFTDetailsPage from "../NFTDetailsPage/NFTDetailsPage";
 import { NFTMarketplaceContext } from "../Context/NFTMarketplaceContext";
 
 const NFTDetails = () => {
-  const { checkIfWalletConnected, getNFTTransactionHistory } = useContext(NFTMarketplaceContext);
+  const { checkIfWalletConnected, getNFTTransactionHistory, getNFTCertificateHash } = useContext(NFTMarketplaceContext);
 
   const [nft, setNft] = useState({
     image: "",
@@ -27,6 +27,7 @@ const NFTDetails = () => {
   const [transactions, setTransactions] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState(null);
+  const [certificateHash, setCertificateHash] = useState(""); // New state for certificate hash
 
   const router = useRouter();
 
@@ -64,6 +65,22 @@ const NFTDetails = () => {
 
     fetchTransactionHistory();
   }, [nft.tokenId, getNFTTransactionHistory, NFTMarketplaceAddress]);
+
+  // Fetch and display the certificate hash for the selected NFT
+  useEffect(() => {
+    const fetchCertificateHash = async () => {
+      if (nft.tokenId) {
+        try {
+          const hash = await getNFTCertificateHash(nft.tokenId);
+          setCertificateHash(hash);
+        } catch (error) {
+          console.error("Error fetching certificate hash:", error);
+        }
+      }
+    };
+
+    fetchCertificateHash();
+  }, [nft.tokenId, getNFTCertificateHash]);
 
   // Función para calcular el tiempo transcurrido
   const formatTimeAgo = (timestamp) => {
@@ -283,6 +300,10 @@ const NFTDetails = () => {
               <p><strong>Para:</strong> {selectedTransaction.to}</p>
               <p><strong>Item:</strong> #{selectedTransaction.tokenId}</p>
               <p><strong>Fecha y Hora:</strong> {selectedTransaction.formattedTimestamp}</p>
+              <p><strong>Certificado Hash:</strong> {certificateHash}</p>
+              <Button onClick={() => copyToClipboard(certificateHash)} type="link">
+                Copiar Certificado
+              </Button>
             </div>
           )}
         </Modal>
