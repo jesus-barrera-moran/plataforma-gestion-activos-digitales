@@ -401,32 +401,55 @@ const NFTDetails = () => {
         {/* Botón de descarga estilo "CSV Export" */}
         <div className="download-section">
           [ Descarga: <Button onClick={downloadCSV} type="link" style={{ color: '#1890ff' }}>
-            <span style={{ textDecoration: 'underline' }}>Exportar CSV</span>
+            <span style={{ textDecoration: 'underline', fontSize: '12px' }}>Exportar CSV</span>
           </Button> ]
         </div>
 
         {/* Modal de Detalles de la Transacción */}
         <Modal
-          title="Detalles de la Transacción"
+          title={
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              <EyeOutlined style={{ color: "#1890ff", fontSize: "22px", marginRight: "8px" }} />
+              <span style={{ fontSize: "20px", fontWeight: "600", color: "#333" }}>Detalles de la Transacción</span>
+            </div>
+          }
           visible={isModalVisible}
           onCancel={closeModal}
           footer={null}
           className="transaction-details-modal"
+          bodyStyle={{
+            padding: "24px",
+            backgroundColor: "#f9f9f9",
+            borderRadius: "8px",
+          }}
         >
           {selectedTransaction && (
-            <div>
-              <p><strong>Hash de Transacción:</strong> {selectedTransaction.transactionHash}</p>
-              <p><strong>Método:</strong> {selectedTransaction.metodo}</p>
+            <div style={{ fontSize: "16px", color: "#555", lineHeight: "1.8" }}>
+              <div style={{ display: "flex", marginBottom: "12px" }}>
+                <span style={{ display: 'inline-block', marginRight: '5px' }}><strong>Hash de Transacción:</strong></span>
+                <Tooltip title="Copiar al portapapeles">
+                  <span style={{ color: "#1890ff", cursor: "pointer" }} onClick={() => copyToClipboard(selectedTransaction.transactionHash)}>
+                    {selectedTransaction.transactionHash.substring(0, 10)}...{selectedTransaction.transactionHash.slice(-10)} <CopyOutlined />
+                  </span>
+                </Tooltip>
+              </div>
+
+              <p><strong>Método:</strong> <Button size="small" style={{ color: "#1890ff", borderColor: "#1890ff" }}>{selectedTransaction.metodo}</Button></p>
               <p><strong>Bloque:</strong> {selectedTransaction.blockNumber}</p>
-              <p><strong>Edad:</strong> {selectedTransaction.relativeTime}</p>
+              {/* <p><strong>Edad:</strong> {selectedTransaction.relativeTime}</p> */}
               <p><strong>De:</strong> {selectedTransaction.from}</p>
               <p><strong>Para:</strong> {selectedTransaction.to}</p>
               <p><strong>Item:</strong> #{selectedTransaction.tokenId}</p>
               <p><strong>Fecha y Hora:</strong> {selectedTransaction.formattedTimestamp}</p>
-              <p><strong>Certificado Hash:</strong> {certificateHash}</p>
-              <Button onClick={() => copyToClipboard(certificateHash)} type="link">
-                Copiar Certificado
-              </Button>
+
+              <div style={{ marginTop: "12px", padding: "10px", backgroundColor: "#ffffff", borderRadius: "6px", boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)" }}>
+                <p style={{ margin: "0", fontWeight: "500", color: "#1890ff" }}><strong>Certificado Hash:</strong></p>
+                <Tooltip title="Copiar Certificado Hash">
+                  <Button type="link" onClick={() => copyToClipboard(certificateHash)} style={{ padding: 0, fontSize: "15px", color: "#1890ff" }}>
+                    {certificateHash.substring(0, 15)}...{certificateHash.slice(-15)} <CopyOutlined />
+                  </Button>
+                </Tooltip>
+              </div>
             </div>
           )}
         </Modal>
@@ -457,7 +480,7 @@ const NFTDetails = () => {
         }
 
         .transaction-details-modal {
-          top: 40px;
+          top: 10px;
         }
 
         h2 {
