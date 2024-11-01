@@ -326,6 +326,21 @@ const NFTDetails = () => {
     saveAs(blob, `Detalles_Transaccion_${transaction.transactionHash}.json`);
   };
 
+  // Función para descargar el certificado de verificación de autenticidad
+  const downloadVerificationCertificate = () => {
+    const certificateData = {
+      resultado: verificationStatus.status === "success" ? "Autenticidad Verificada" : "Autenticidad No Verificada",
+      mensaje: verificationStatus.content,
+      "hash del archivo": verificationStatus.status === "success" ? verificationStatus.fileHash : "No verificado",
+      "hash en blockchain": certificateHash,
+      fecha: new Date().toLocaleString(),
+      tokenId: nft.tokenId,
+    };
+
+    const blob = new Blob([JSON.stringify(certificateData, null, 2)], { type: "application/json" });
+    saveAs(blob, `Certificado_Verificacion_${nft.tokenId}.json`);
+  };
+
   return (
     <div className="NFTDetailsPage">
       <NFTDetailsPage nft={nft} />
@@ -361,6 +376,9 @@ const NFTDetails = () => {
           footer={[
             <Button key="close" type="primary" onClick={handleCloseModal} style={{ fontWeight: "bold", padding: "6px 16px" }}>
               Cerrar
+            </Button>,
+            <Button key="download" icon={<DownloadOutlined />} onClick={downloadVerificationCertificate} style={{ fontWeight: "bold", color: "#1890ff" }}>
+              Descargar Verificación
             </Button>,
           ]}
           centered
