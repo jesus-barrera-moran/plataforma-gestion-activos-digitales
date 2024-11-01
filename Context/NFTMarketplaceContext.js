@@ -124,35 +124,45 @@ export const NFTMarketplaceProvider = ({ children }) => {
     setOpenError(true);
   };
 
-  // Genera el hash SHA-256 del archivo
   const generateFileHash = async (file) => {
-    return new Promise((resolve, reject) => {
+    try {
+      let arrayBuffer;
+  
+      // Verificar si file es una URL (cadena de texto) y convertir a Blob
       if (typeof file === "string") {
-        // Si file es una URL, descargamos el archivo y lo convertimos a Blob
-        fetch(file)
-          .then((response) => response.blob())
-          .then((blob) => {
-            const reader = new FileReader();
-            reader.onload = (e) => {
-              const hash = SHA256(e.target.result).toString();
-              resolve(hash);
-            };
-            reader.onerror = (e) => reject(e);
-            reader.readAsArrayBuffer(blob); // Leer como ArrayBuffer
-          })
-          .catch((error) => reject(error));
+        const response = await fetch(file); // Descargar el archivo
+        const blob = await response.blob();
+        arrayBuffer = await blob.arrayBuffer();
+      
+      // Verificar si file es un objeto base64 y convertirlo
+      } else if (typeof file === "object" && file.base64) {
+        const binary = atob(file.base64); // Decodificar base64 a binario
+        const bytes = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i++) {
+          bytes[i] = binary.charCodeAt(i);
+        }
+        arrayBuffer = bytes.buffer;
+      
+      // Si file es un Blob o File, leerlo directamente
+      } else if (file instanceof Blob) {
+        arrayBuffer = await file.arrayBuffer();
+  
       } else {
-        // Si file ya es un Blob o File, proceder con el cálculo de hash
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          const hash = SHA256(e.target.result).toString();
-          resolve(hash);
-        };
-        reader.onerror = (e) => reject(e);
-        reader.readAsArrayBuffer(file); // Leer como ArrayBuffer
+        throw new Error("Formato de archivo no compatible para el hash.");
       }
-    });
-  };
+  
+      // Calcular el hash con Web Crypto API
+      const hashBuffer = await crypto.subtle.digest("SHA-256", arrayBuffer);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      const hashHex = hashArray.map(b => b.toString(16).padStart(2, "0")).join("");
+      
+      console.log("Hash generado:", hashHex);
+      return hashHex;
+    } catch (error) {
+      console.error("Error al generar hash del archivo:", error);
+      throw error;
+    }
+  };  
 
   //---CREATE NFT FUNCTION
   const createNFT = async (name, price, image, description, website, router) => {
@@ -527,7 +537,8 @@ export const NFTMarketplaceProvider = ({ children }) => {
         getTokenIdCounter,
         getItemsSoldCounter,
         getNFTTransactionHistory,
-        getNFTCertificateHash, // Added here
+        getNFTCertificateHash,
+        generateFileHash,
       }}
     >
       {children}

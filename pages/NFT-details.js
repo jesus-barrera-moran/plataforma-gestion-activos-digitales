@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useRouter } from "next/router";
-import { Table, Button, Modal, Tooltip, message } from "antd";
-import { EyeOutlined, CopyOutlined } from '@ant-design/icons';
+import { Table, Button, Modal, Tooltip, Upload, message } from "antd";
+import { EyeOutlined, CopyOutlined, UploadOutlined } from '@ant-design/icons';
 import { NFTMarketplaceAddress } from "../Context/constants";
 import { saveAs } from "file-saver";
 import Papa from "papaparse";
@@ -13,7 +13,7 @@ import NFTDetailsPage from "../NFTDetailsPage/NFTDetailsPage";
 import { NFTMarketplaceContext } from "../Context/NFTMarketplaceContext";
 
 const NFTDetails = () => {
-  const { checkIfWalletConnected, getNFTTransactionHistory, getNFTCertificateHash } = useContext(NFTMarketplaceContext);
+  const { checkIfWalletConnected, getNFTTransactionHistory, getNFTCertificateHash, generateFileHash } = useContext(NFTMarketplaceContext);
 
   const [nft, setNft] = useState({
     image: "",
@@ -27,7 +27,8 @@ const NFTDetails = () => {
   const [transactions, setTransactions] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [selectedTransaction, setSelectedTransaction] = useState(null);
-  const [certificateHash, setCertificateHash] = useState(""); // New state for certificate hash
+  const [certificateHash, setCertificateHash] = useState(""); // Estado para el hash del certificado
+  const [verificationStatus, setVerificationStatus] = useState(null);
 
   const router = useRouter();
 
@@ -49,8 +50,8 @@ const NFTDetails = () => {
             .sort((a, b) => b.blockNumber - a.blockNumber)
             .map((tx) => ({
               ...tx,
-              fromDisplay: tx.from?.toLowerCase() === NFTMarketplaceAddress?.toLowerCase() ? "Mercado" : tx.from, // Visualización
-              toDisplay: tx.to?.toLowerCase() === NFTMarketplaceAddress?.toLowerCase() ? "Mercado" : tx.to,       // Visualización
+              fromDisplay: tx.from?.toLowerCase() === NFTMarketplaceAddress?.toLowerCase() ? "Mercado" : tx.from,
+              toDisplay: tx.to?.toLowerCase() === NFTMarketplaceAddress?.toLowerCase() ? "Mercado" : tx.to,
               metodo: determineMethod(tx, NFTMarketplaceAddress),
               formattedTimestamp: tx.timestamp ? new Date(tx.timestamp).toLocaleString() : "N/A",
               relativeTime: tx.timestamp ? formatTimeAgo(tx.timestamp) : "N/A"
@@ -66,7 +67,6 @@ const NFTDetails = () => {
     fetchTransactionHistory();
   }, [nft.tokenId, getNFTTransactionHistory, NFTMarketplaceAddress]);
 
-  // Fetch and display the certificate hash for the selected NFT
   useEffect(() => {
     const fetchCertificateHash = async () => {
       if (nft.tokenId) {
@@ -81,6 +81,34 @@ const NFTDetails = () => {
 
     fetchCertificateHash();
   }, [nft.tokenId, getNFTCertificateHash]);
+
+  // Verificar autenticidad con el archivo subido
+  const handleFileUpload = async (file) => {
+    try {
+      const fileHash = await generateFileHash(file); // Genera el hash del archivo
+  
+      // Convierte ambos hashes a minúsculas y quita '0x' si existe en el hash de la blockchain
+      const formattedFileHash = fileHash.toLowerCase();
+      const formattedCertificateHash = certificateHash.replace(/^0x/, "").toLowerCase();
+  
+      // Mostrar ambos hashes en consola
+      console.log("Hash del archivo subido:", formattedFileHash);
+      console.log("Hash registrado en la blockchain:", formattedCertificateHash);
+  
+      // Comparación estricta
+      if (formattedFileHash === formattedCertificateHash) {
+        setVerificationStatus("El archivo es auténtico.");
+        message.success("El archivo es auténtico.");
+      } else {
+        setVerificationStatus("El archivo no coincide con el registro.");
+        message.error("El archivo no coincide con el registro.");
+      }
+    } catch (error) {
+      console.error("Error al verificar el archivo:", error);
+      setVerificationStatus("Ocurrió un error en la verificación del archivo.");
+      message.error("Ocurrió un error en la verificación del archivo.");
+    }
+  };  
 
   // Función para calcular el tiempo transcurrido
   const formatTimeAgo = (timestamp) => {
@@ -122,8 +150,8 @@ const NFTDetails = () => {
       Método: tx.metodo,
       "Bloque": tx.blockNumber,
       "Fecha y Hora": tx.formattedTimestamp,
-      De: tx.from, // Dirección real para el CSV
-      Para: tx.to, // Dirección real para el CSV
+      De: tx.from,
+      Para: tx.to,
     }));
 
     const csv = Papa.unparse(csvData);
@@ -214,7 +242,7 @@ const NFTDetails = () => {
       key: "relativeTime",
       align: "center",
       render: (text, record) => (
-        <Tooltip title={record.formattedTimestamp}> {/* Tooltip con fecha y hora completa */}
+        <Tooltip title={record.formattedTimestamp}>
           <span style={{ fontSize: '14px' }}>{text}</span>
         </Tooltip>
       ),
@@ -225,7 +253,7 @@ const NFTDetails = () => {
       key: "from",
       align: "left",
       render: (text, record) => (
-        <Tooltip title={record.from}> {/* Mostrar dirección real en el tooltip */}
+        <Tooltip title={record.from}>
           <span style={{ display: 'inline-flex', alignItems: 'center' }}>
             <span style={{ fontSize: '14px', color: '#1890ff', marginRight: '8px' }}>
               {text.length > 15 ? `${text.substring(0, 10)}...${text.slice(-10)}` : text}
@@ -241,7 +269,7 @@ const NFTDetails = () => {
       key: "to",
       align: "left",
       render: (text, record) => (
-        <Tooltip title={record.to}> {/* Mostrar dirección real en el tooltip */}
+        <Tooltip title={record.to}>
           <span style={{ display: 'inline-flex', alignItems: 'center' }}>
             <span style={{ fontSize: '14px', color: '#1890ff', marginRight: '8px' }}>
               {text.length > 15 ? `${text.substring(0, 10)}...${text.slice(-10)}` : text}
@@ -260,9 +288,32 @@ const NFTDetails = () => {
     },
   ];
 
+  // Configuración para la carga de archivos
+  const uploadProps = {
+    beforeUpload: (file) => {
+      handleFileUpload(file);
+      return false; // Evita que el archivo se cargue automáticamente
+    },
+  };
+
   return (
     <div className="NFTDetailsPage">
       <NFTDetailsPage nft={nft} />
+
+      <div className="verification-section">
+        <h2>Verificación de Autenticidad</h2>
+        <Upload {...uploadProps}>
+          <Button icon={<UploadOutlined />} type="primary">
+            Subir archivo para verificar
+          </Button>
+        </Upload>
+        {verificationStatus && (
+          <p style={{ marginTop: "10px", fontWeight: "bold" }}>
+            {verificationStatus}
+          </p>
+        )}
+      </div>
+
       <div className="transaction-history">
         <h2>Historial de Transacciones</h2>
         <Table
@@ -309,10 +360,21 @@ const NFTDetails = () => {
         </Modal>
       </div>
       <style jsx global>{`
+        .verification-section {
+          text-align: center;
+          margin: 20px 0;
+        }
+
         .transaction-history {
           width: 90%;
           margin: 0 auto;
           margin-top: 2rem;
+        }
+
+        .authenticity-checker {
+          width: 90%;
+          margin: 2rem auto;
+          text-align: center;
         }
 
         h2 {
@@ -367,6 +429,9 @@ const NFTDetails = () => {
 
         @media screen and (max-width: 50em) {
           .transaction-history {
+            width: 100%;
+          }
+          .authenticity-checker {
             width: 100%;
           }
         }
