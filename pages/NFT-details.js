@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useRouter } from "next/router";
 import { Table, Button, Modal, Tooltip, Upload, message } from "antd";
-import { UploadOutlined, CheckCircleOutlined, ExclamationCircleOutlined, WarningOutlined, EyeOutlined, CopyOutlined } from '@ant-design/icons';
+import { UploadOutlined, CheckCircleOutlined, ExclamationCircleOutlined, WarningOutlined, EyeOutlined, CopyOutlined, DownloadOutlined  } from '@ant-design/icons';
 import { NFTMarketplaceAddress } from "../Context/constants";
 import { saveAs } from "file-saver";
 import Papa from "papaparse";
@@ -378,14 +378,22 @@ const NFTDetails = () => {
       )}
 
       <div className="transaction-history">
-        <h2>Historial de Transacciones</h2>
+        {/* Sección de resumen de transacciones y verificación de autenticidad */}
+        <div className="transaction-summary">
+          <span>{`Se encontró un total de ${transactions.length} transacciones`}</span>
+          <Tooltip title="Descargar Datos de Transacciones">
+            <Button icon={<DownloadOutlined />} onClick={downloadCSV} style={{ marginLeft: "auto", fontSize: "14px", color: '#1890ff' }}> Descargar Datos de Transacciones</Button> 
+          </Tooltip>
+        </div>
+
+        {/* Sección de tabla de historial de transacciones */}
         <Table
           columns={columns}
           dataSource={transactions}
           rowKey="transactionHash"
           pagination={{ pageSize: 10 }}
           bordered={false}
-          locale={{ emptyText: "No se encontraron transacciones para este NFT." }}
+          locale={{ emptyText: "No se encontraron transacciones para este Activo Digital." }}
           style={{ fontSize: '14px', borderRadius: '8px', overflow: 'hidden' }}
           rowClassName={(record, index) => (index % 2 === 0 ? 'table-row-light' : 'table-row-dark')}
         />
@@ -403,6 +411,7 @@ const NFTDetails = () => {
           visible={isModalVisible}
           onCancel={closeModal}
           footer={null}
+          className="transaction-details-modal"
         >
           {selectedTransaction && (
             <div>
@@ -434,10 +443,21 @@ const NFTDetails = () => {
           margin-top: 2rem;
         }
 
+        .transaction-summary {
+          display: flex;
+          align-items: center;
+          font-size: 14px;
+          margin-bottom: 10px;
+        }
+
         .authenticity-checker {
           width: 90%;
           margin: 2rem auto;
           text-align: center;
+        }
+
+        .transaction-details-modal {
+          top: 40px;
         }
 
         h2 {
