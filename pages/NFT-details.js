@@ -362,7 +362,6 @@ const NFTDetails = () => {
         <h3 style={{ color: "#1890ff", fontSize: "20px", fontWeight: "600", marginBottom: "8px" }}>Certificado de Verificación</h3>
         
         {/* Mostrar el Hash del Certificado */}
-        <p style={{ fontSize: "16px", color: "#333", marginBottom: "8px" }}><strong>Hash del Certificado:</strong></p>
         <div style={{ display: "flex", alignItems: "center", marginBottom: "15px" }}>
           <span style={{ color: "#555", fontSize: "15px", marginRight: "8px" }}>
             {certificateHash ? `${certificateHash.substring(0, 15)}...${certificateHash.slice(-15)}` : "No disponible"}
