@@ -101,12 +101,12 @@ const NFTDetails = () => {
   // Función para descargar el historial de transacciones como CSV
   const downloadCSV = () => {
     const csvData = transactions.map((tx) => ({
+      "Hash de Transacción": tx.transactionHash,
+      Método: tx.metodo,
+      "Bloque": tx.blockNumber,
+      "Fecha y Hora": tx.formattedTimestamp,
       De: tx.from,
       Para: tx.to,
-      "Fecha y Hora": tx.formattedTimestamp,
-      "Hash de Transacción": tx.transactionHash,
-      "Bloque": tx.blockNumber,
-      Método: tx.metodo,
     }));
 
     const csv = Papa.unparse(csvData);
