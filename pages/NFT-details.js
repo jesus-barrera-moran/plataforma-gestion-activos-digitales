@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useRouter } from "next/router";
 import { Table, Button, Modal, Tooltip, Upload, message } from "antd";
-import { EyeOutlined, CopyOutlined, UploadOutlined } from '@ant-design/icons';
+import { UploadOutlined, CheckCircleOutlined, ExclamationCircleOutlined, WarningOutlined, EyeOutlined, CopyOutlined } from '@ant-design/icons';
 import { NFTMarketplaceAddress } from "../Context/constants";
 import { saveAs } from "file-saver";
 import Papa from "papaparse";
@@ -29,6 +29,7 @@ const NFTDetails = () => {
   const [selectedTransaction, setSelectedTransaction] = useState(null);
   const [certificateHash, setCertificateHash] = useState(""); // Estado para el hash del certificado
   const [verificationStatus, setVerificationStatus] = useState(null);
+  const [isAuthenticityModalVisible, setIsAuthenticityModalVisible] = useState(false);
 
   const router = useRouter();
 
@@ -85,30 +86,34 @@ const NFTDetails = () => {
   // Verificar autenticidad con el archivo subido
   const handleFileUpload = async (file) => {
     try {
-      const fileHash = await generateFileHash(file); // Genera el hash del archivo
-  
-      // Convierte ambos hashes a minúsculas y quita '0x' si existe en el hash de la blockchain
+      const fileHash = await generateFileHash(file);
       const formattedFileHash = fileHash.toLowerCase();
       const formattedCertificateHash = certificateHash.replace(/^0x/, "").toLowerCase();
-  
-      // Mostrar ambos hashes en consola
-      console.log("Hash del archivo subido:", formattedFileHash);
-      console.log("Hash registrado en la blockchain:", formattedCertificateHash);
-  
-      // Comparación estricta
+
+      // Configuración de mensajes según el resultado
       if (formattedFileHash === formattedCertificateHash) {
-        setVerificationStatus("El archivo es auténtico.");
-        message.success("El archivo es auténtico.");
+        setVerificationStatus({
+          title: "Verificación de Autenticidad Completa",
+          content: "Autenticidad Verificada: El archivo proporcionado coincide con el registro oficial de certificación en la blockchain.",
+          status: "success",
+        });
       } else {
-        setVerificationStatus("El archivo no coincide con el registro.");
-        message.error("El archivo no coincide con el registro.");
+        setVerificationStatus({
+          title: "Advertencia de Autenticidad",
+          content: "El archivo cargado no coincide con el certificado registrado. La autenticidad del archivo no está confirmada.",
+          status: "error",
+        });
       }
     } catch (error) {
       console.error("Error al verificar el archivo:", error);
-      setVerificationStatus("Ocurrió un error en la verificación del archivo.");
-      message.error("Ocurrió un error en la verificación del archivo.");
+      setVerificationStatus({
+        title: "Error en la Verificación",
+        content: "Se ha producido un error en el proceso de verificación. Por favor, intente nuevamente o contacte a soporte.",
+        status: "warning",
+      });
     }
-  };  
+    setIsAuthenticityModalVisible(true); // Mostrar el modal con el resultado
+  };
 
   // Función para calcular el tiempo transcurrido
   const formatTimeAgo = (timestamp) => {
@@ -127,6 +132,10 @@ const NFTDetails = () => {
       }
     }
     return "ahora";
+  };
+
+  const handleCloseModal = () => {
+    setIsAuthenticityModalVisible(false);
   };
 
   // Lógica para determinar el método basado en la transacción
@@ -294,6 +303,7 @@ const NFTDetails = () => {
       handleFileUpload(file);
       return false; // Evita que el archivo se cargue automáticamente
     },
+    showUploadList: false,
   };
 
   return (
@@ -307,12 +317,65 @@ const NFTDetails = () => {
             Subir archivo para verificar
           </Button>
         </Upload>
-        {verificationStatus && (
-          <p style={{ marginTop: "10px", fontWeight: "bold" }}>
-            {verificationStatus}
-          </p>
-        )}
       </div>
+
+      {/* Modal para mostrar el resultado de la verificación */}
+      {verificationStatus && (
+        <Modal
+          title={
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+              {verificationStatus.status === "success" && (
+                <CheckCircleOutlined style={{ color: "#4caf50", fontSize: "28px", marginRight: "12px" }} />
+              )}
+              {verificationStatus.status === "error" && (
+                <ExclamationCircleOutlined style={{ color: "#e53935", fontSize: "28px", marginRight: "12px" }} />
+              )}
+              {verificationStatus.status === "warning" && (
+                <WarningOutlined style={{ color: "#ffa000", fontSize: "28px", marginRight: "12px" }} />
+              )}
+              <span style={{ fontWeight: "600", fontSize: "20px", color: "#333" }}>{verificationStatus.title}</span>
+            </div>
+          }
+          visible={isAuthenticityModalVisible}
+          onCancel={handleCloseModal}
+          footer={[
+            <Button key="close" type="primary" onClick={handleCloseModal} style={{ fontWeight: "bold", padding: "6px 16px" }}>
+              Cerrar
+            </Button>,
+          ]}
+          centered
+          bodyStyle={{
+            fontSize: "16px",
+            padding: "24px",
+            lineHeight: "1.6",
+            color: "#333",
+            backgroundColor: "#f7f7f7",
+          }}
+        >
+          <div style={{
+            marginBottom: "12px",
+            fontSize: "17px",
+            fontWeight: "500",
+            color: verificationStatus.status === "success" ? "#4caf50" : verificationStatus.status === "error" ? "#e53935" : "#ffa000",
+          }}>
+            {verificationStatus.status === "success"
+              ? "Resultado de la Verificación"
+              : verificationStatus.status === "error"
+              ? "Advertencia Importante"
+              : "Información de Verificación"}
+          </div>
+          <div style={{
+            fontSize: "15px",
+            color: "#555",
+            padding: "10px",
+            borderRadius: "5px",
+            backgroundColor: "#ffffff",
+            boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)"
+          }}>
+            {verificationStatus.content}
+          </div>
+        </Modal>
+      )}
 
       <div className="transaction-history">
         <h2>Historial de Transacciones</h2>
