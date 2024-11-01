@@ -1,7 +1,9 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useRouter } from "next/router";
-import { Table, Tag } from "antd";
+import { Table, Tag, Button } from "antd";
 import { NFTMarketplaceAddress } from "../Context/constants";
+import { saveAs } from "file-saver";
+import Papa from "papaparse";
 
 // INTERNAL IMPORT
 import NFTDetailsPage from "../NFTDetailsPage/NFTDetailsPage";
@@ -71,6 +73,22 @@ const NFTDetails = () => {
       return "Compra";
     }
     return "Transferencia";
+  };
+
+  // Función para descargar el historial de transacciones como CSV
+  const downloadCSV = () => {
+    const csvData = transactions.map((tx) => ({
+      De: tx.from,
+      Para: tx.to,
+      "Fecha y Hora": tx.formattedTimestamp,
+      "Hash de Transaccion": tx.transactionHash,
+      "Bloque": tx.blockNumber,
+      "Acción": tx.action,
+    }));
+
+    const csv = Papa.unparse(csvData);
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    saveAs(blob, `historial_transacciones_${nft.tokenId}.csv`);
   };
 
   // Definición de las columnas para la tabla de AntD
@@ -156,6 +174,9 @@ const NFTDetails = () => {
       <NFTDetailsPage nft={nft} />
       <div className="transaction-history">
         <h2>Historial de Transacciones</h2>
+        <Button onClick={downloadCSV} type="primary" style={{ marginBottom: '1rem' }}>
+          Descargar CSV
+        </Button>
         <Table
           columns={columns}
           dataSource={transactions}
