@@ -55,7 +55,8 @@ const NFTDetails = () => {
               toDisplay: tx.to?.toLowerCase() === NFTMarketplaceAddress?.toLowerCase() ? "Mercado" : tx.to,
               metodo: determineMethod(tx, NFTMarketplaceAddress),
               formattedTimestamp: tx.timestamp ? new Date(tx.timestamp).toLocaleString() : "N/A",
-              relativeTime: tx.timestamp ? formatTimeAgo(tx.timestamp) : "N/A"
+              relativeTime: tx.timestamp ? formatTimeAgo(tx.timestamp) : "N/A",
+              item: nft.tokenId,
             }));
 
           setTransactions(sortedHistory);
@@ -161,11 +162,12 @@ const NFTDetails = () => {
       "Fecha y Hora": tx.formattedTimestamp,
       De: tx.from,
       Para: tx.to,
+      Item: `#${tx.item}`,
     }));
 
     const csv = Papa.unparse(csvData);
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-    saveAs(blob, `historial_transacciones_${nft.tokenId}.csv`);
+    saveAs(blob, `Historial_Transacciones_${nft.tokenId}.csv`);
   };
 
   // Función para copiar al portapapeles y mostrar un mensaje
@@ -290,7 +292,7 @@ const NFTDetails = () => {
     },
     {
       title: "Item",
-      dataIndex: "tokenId",
+      dataIndex: "item",
       key: "item",
       align: "center",
       render: (text) => <span style={{ fontSize: '14px' }}>#{text}</span>,
@@ -304,6 +306,24 @@ const NFTDetails = () => {
       return false; // Evita que el archivo se cargue automáticamente
     },
     showUploadList: false,
+  };
+
+  // Función para descargar los detalles de la transacción en formato JSON
+  const downloadTransactionDetails = (transaction) => {
+    const transactionData = {
+      "Hash de Transacción": transaction.transactionHash,
+      Método: transaction.metodo,
+      Bloque: transaction.blockNumber,
+      // Edad: transaction.relativeTime,
+      De: transaction.from,
+      Para: transaction.to,
+      Item: `#${transaction.item}`,
+      "Fecha y Hora": transaction.formattedTimestamp,
+      "Certificado Hash": certificateHash
+    };
+
+    const blob = new Blob([JSON.stringify(transactionData, null, 2)], { type: "application/json" });
+    saveAs(blob, `Detalles_Transaccion_${transaction.transactionHash}.json`);
   };
 
   return (
@@ -439,7 +459,7 @@ const NFTDetails = () => {
               {/* <p><strong>Edad:</strong> {selectedTransaction.relativeTime}</p> */}
               <p><strong>De:</strong> {selectedTransaction.from}</p>
               <p><strong>Para:</strong> {selectedTransaction.to}</p>
-              <p><strong>Item:</strong> #{selectedTransaction.tokenId}</p>
+              <p><strong>Item:</strong> #{selectedTransaction.item}</p>
               <p><strong>Fecha y Hora:</strong> {selectedTransaction.formattedTimestamp}</p>
 
               <div style={{ marginTop: "12px", padding: "10px", backgroundColor: "#ffffff", borderRadius: "6px", boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)" }}>
@@ -449,6 +469,18 @@ const NFTDetails = () => {
                     {certificateHash.substring(0, 15)}...{certificateHash.slice(-15)} <CopyOutlined />
                   </Button>
                 </Tooltip>
+              </div>
+
+              {/* Botón para descargar los detalles */}
+              <div style={{ textAlign: "right", marginTop: "20px" }}>
+                <Button
+                  type="primary"
+                  icon={<DownloadOutlined />}
+                  onClick={() => downloadTransactionDetails(selectedTransaction)}
+                  style={{ fontWeight: "bold" }}
+                >
+                  Descargar Detalles
+                </Button>
               </div>
             </div>
           )}
