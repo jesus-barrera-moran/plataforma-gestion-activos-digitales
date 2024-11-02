@@ -212,7 +212,7 @@ const NFTDetails = () => {
         <Tooltip title={text}>
           <span style={{ display: 'inline-flex', alignItems: 'center' }}>
             <a
-              href={`https://etherscan.io/tx/${text}`}
+              href={`https://cardona-zkevm.polygonscan.com/tx/${text}`}
               target="_blank"
               rel="noopener noreferrer"
               style={{ fontSize: '14px', color: '#1890ff', marginRight: '8px' }}
@@ -238,7 +238,7 @@ const NFTDetails = () => {
       align: "center",
       render: (text) => (
         <a
-          href={`https://etherscan.io/block/${text}`}
+          href={`https://cardona-zkevm.polygonscan.com/block/${text}`}
           target="_blank"
           rel="noopener noreferrer"
           style={{ fontSize: '14px', color: '#1890ff' }}
