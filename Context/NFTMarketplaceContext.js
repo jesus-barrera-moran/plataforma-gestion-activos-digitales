@@ -529,6 +529,58 @@ export const NFTMarketplaceProvider = ({ children }) => {
     }
   };
 
+  const getContractTransactionHistory = async () => {
+    try {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const contract = new ethers.Contract(
+        NFTMarketplaceAddress,
+        NFTMarketplaceABI,
+        provider
+      );
+  
+      // Obtén todos los eventos de Transferencia sin filtrar por tokenId
+      const transferEvents = await contract.queryFilter(
+        contract.filters.Transfer()
+      );
+  
+      // Mapea los eventos a una estructura de transacción
+      const history = await Promise.all(
+        transferEvents.map(async (event) => {
+          // Obtén el bloque para acceder a la marca de tiempo
+          const block = await provider.getBlock(event.blockNumber);
+          const timestamp = block.timestamp * 1000; // Convierte a milisegundos para formatear como fecha
+  
+          // Determina el precio solo si la transacción es de tipo "Compra" o "Publicación"
+          let price = null;
+          const tokenId = event.args[2].toString();
+          if (
+            event.args[1].toLowerCase() === NFTMarketplaceAddress.toLowerCase() || // Publicación
+            event.args[0].toLowerCase() === NFTMarketplaceAddress.toLowerCase()    // Compra
+          ) {
+            const marketItem = await contract.getMarketItem(tokenId);
+            price = ethers.utils.formatEther(marketItem.price);
+          }
+  
+          return {
+            from: event.args[0],
+            to: event.args[1],
+            tokenId,
+            transactionHash: event.transactionHash,
+            blockNumber: event.blockNumber,
+            timestamp,
+            price,
+          };
+        })
+      );
+  
+      console.log("Contract Transaction History:", history);
+      return history;
+    } catch (error) {
+      console.error("Error fetching contract transaction history: ", error);
+      return [];
+    }
+  };  
+
   return (
     <NFTMarketplaceContext.Provider
       value={{
@@ -552,6 +604,7 @@ export const NFTMarketplaceProvider = ({ children }) => {
         getTokenIdCounter,
         getItemsSoldCounter,
         getNFTTransactionHistory,
+        getContractTransactionHistory,
         getNFTCertificateHash,
         generateFileHash,
       }}

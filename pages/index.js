@@ -9,19 +9,22 @@ import {
   Filter,
   NFTCard,
   Loader,
+  TransactionsTable,
 } from "../components/componentsindex";
 
 //IMPORTING CONTRACT DATA
 import { NFTMarketplaceContext } from "../Context/NFTMarketplaceContext";
+import { NFTMarketplaceAddress } from "../Context/constants";
 
 const Home = () => {
-  const { checkIfWalletConnected, currentAccount, getAllDigitalAssets, getTokenIdCounter, getItemsSoldCounter, } = useContext(
+  const { checkIfWalletConnected, currentAccount, getAllDigitalAssets, getTokenIdCounter, getItemsSoldCounter, getContractTransactionHistory } = useContext(
     NFTMarketplaceContext
   );
 
   // State hooks
   const [nfts, setNfts] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [transactions, setTransactions] = useState([]);
 
   useEffect(() => {
     checkIfWalletConnected();
@@ -50,6 +53,64 @@ const Home = () => {
     }
   }, [currentAccount]);
 
+  // Lógica para determinar el método basado en la transacción
+  const determineMethod = (tx, NFTMarketplaceAddress) => {
+    if (tx.from === "0x0000000000000000000000000000000000000000") {
+      return "Creación";
+    }
+    if (tx.to?.toLowerCase() === NFTMarketplaceAddress?.toLowerCase()) {
+      return "Publicación";
+    }
+    if (tx.from?.toLowerCase() === NFTMarketplaceAddress?.toLowerCase()) {
+      return "Compra";
+    }
+    return "Transferencia";
+  };
+
+  // Función para calcular el tiempo transcurrido
+  const formatTimeAgo = (timestamp) => {
+    const seconds = Math.floor((new Date() - new Date(timestamp)) / 1000);
+    const intervals = [
+      { label: 'año', seconds: 31536000 },
+      { label: 'mes', seconds: 2592000 },
+      { label: 'día', seconds: 86400 },
+      { label: 'hora', seconds: 3600 },
+      { label: 'minuto', seconds: 60 },
+    ];
+    for (const interval of intervals) {
+      const count = Math.floor(seconds / interval.seconds);
+      if (count >= 1) {
+        return `hace ${count} ${interval.label}${count > 1 ? 's' : ''}`;
+      }
+    }
+    return "ahora";
+  };
+
+  useEffect(() => {
+    const fetchTransactionHistory = async () => {
+      try {
+        const history = await getContractTransactionHistory();
+        const sortedHistory = history
+          .sort((a, b) => b.blockNumber - a.blockNumber)
+          .map((tx) => ({
+            ...tx,
+            fromDisplay: tx.from?.toLowerCase() === NFTMarketplaceAddress?.toLowerCase() ? "Mercado" : tx.from,
+            toDisplay: tx.to?.toLowerCase() === NFTMarketplaceAddress?.toLowerCase() ? "Mercado" : tx.to,
+            metodo: determineMethod(tx, NFTMarketplaceAddress),
+            formattedTimestamp: tx.timestamp ? new Date(tx.timestamp).toLocaleString() : "N/A",
+            relativeTime: tx.timestamp ? formatTimeAgo(tx.timestamp) : "N/A",
+            item: tx.tokenId || "",
+          }));
+
+        setTransactions(sortedHistory);
+      } catch (error) {
+        console.error("Error al obtener el historial de transacciones:", error);
+      }
+    };
+
+    fetchTransactionHistory();
+  }, [getContractTransactionHistory, NFTMarketplaceAddress]);
+
   return (
     <div className={Style.homePage}>
       <HeroSection />
@@ -76,6 +137,8 @@ const Home = () => {
         // Show NFT cards when loading is false and NFTs are available
         <NFTCard NFTData={nfts} />
       )}
+
+      <TransactionsTable transactions={transactions}/>
     </div>
   );
 };
