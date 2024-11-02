@@ -71,6 +71,8 @@ contract NFTMarketplace is ERC721URIStorage {
         payable
         returns (uint256)
     {
+        require(!isHashRegistered(hash), unicode"Este hash ya está registrado para otro activo digital.");
+
         _tokenIds.increment();
         uint256 newTokenId = _tokenIds.current();
 
@@ -107,6 +109,17 @@ contract NFTMarketplace is ERC721URIStorage {
             true,
             hash // Emitimos el evento con el hash
         );
+    }
+
+    // Nueva función para verificar si un hash ya está registrado
+    function isHashRegistered(bytes32 hash) public view returns (bool) {
+        uint256 totalItemCount = _tokenIds.current();
+        for (uint256 i = 0; i < totalItemCount; i++) {
+            if (idToMarketItem[i + 1].hash == hash) {
+                return true; // Hash ya registrado
+            }
+        }
+        return false; // Hash no encontrado
     }
 
     // Listar activo digital en el mercado

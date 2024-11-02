@@ -166,8 +166,11 @@ export const NFTMarketplaceProvider = ({ children }) => {
 
   //---CREATE NFT FUNCTION
   const createNFT = async (name, price, image, description, website, router) => {
-    if (!name || !description || !price || !image)
-      return setError("La información se encuentra incompleta"), setOpenError(true);
+    if (!name || !description || !price || !image) {
+      setError("La información se encuentra incompleta");
+      setOpenError(true);
+      return;
+    }
 
     const dataToStringify = { name, description, image };
 
@@ -180,6 +183,18 @@ export const NFTMarketplaceProvider = ({ children }) => {
     try {
       const hash = await generateFileHash(image);
 
+      // Llamar a la función `hashExists` en el contrato para verificar si el hash ya está registrado
+      const contract = await connectingWithSmartContract();
+      const hashAlreadyExists = await contract.isHashRegistered(ethers.utils.arrayify("0x" + hash)); // Pasar el hash en formato `bytes32`
+
+      if (hashAlreadyExists) {
+          // Mostrar un error si el hash ya existe
+          setError("El activo digital que intentas registrar ya existe en la Blockchain. Por favor, intenta con otro archivo.");
+          setOpenError(true);
+          return;
+      }
+
+      // Proceder con la creación del token si el hash no existe
       const response = await axios({
         method: "POST",
         url: "https://api.pinata.cloud/pinning/pinJSONToIPFS",
