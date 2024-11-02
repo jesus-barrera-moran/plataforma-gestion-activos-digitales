@@ -358,11 +358,13 @@ const NFTDetails = () => {
       <NFTDetailsPage nft={nft} />
 
       {/* Sección del Certificado de Verificación */}
-      <div className="certificate-section" style={{ marginTop: "20px", padding: "20px", backgroundColor: "#f9f9f9", borderRadius: "8px", boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)" }}>
-        <h3 style={{ color: "#1890ff", fontSize: "20px", fontWeight: "600", marginBottom: "8px" }}>Certificado de Verificación</h3>
+      <div className="verification-container" style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "20px", width: "100%", maxWidth: "800px", margin: "0 auto", padding: "20px", textAlign:  'center' }}>
+      {/* Sección del Certificado de Verificación */}
+      <div className="certificate-section" style={{ width: "100%", padding: "20px", backgroundColor: "#f9f9f9", borderRadius: "8px", boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)" }}>
+        <h3 style={{ color: "#1890ff", fontSize: "20px", fontWeight: "600", marginBottom: "8px", marginTop: '0' }}>Certificado de Verificación</h3>
         
         {/* Mostrar el Hash del Certificado */}
-        <div style={{ display: "flex", alignItems: "center", marginBottom: "15px" }}>
+        <div style={{ display: "flex", alignItems: "center", marginBottom: "15px", justifyContent: 'center' }}>
           <span style={{ color: "#555", fontSize: "15px", marginRight: "8px" }}>
             {certificateHash ? `${certificateHash.substring(0, 15)}...${certificateHash.slice(-15)}` : "No disponible"}
           </span>
@@ -387,13 +389,19 @@ const NFTDetails = () => {
         </Button>
       </div>
 
-      <div className="verification-section">
-        <h2>Verificación de Autenticidad</h2>
+      {/* Sección de Verificación de Autenticidad */}
+      <div className="verification-section" style={{ width: "100%", padding: "20px", backgroundColor: "#f9f9f9", borderRadius: "8px", boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)" }}>
+        <h3 style={{ color: "#1890ff", fontSize: "20px", fontWeight: "600", marginBottom: "15px", marginTop: "0" }}>Verificación de Autenticidad</h3>
         <Upload {...uploadProps}>
-          <Button icon={<UploadOutlined />} type="primary">
+          <Button
+            icon={<UploadOutlined />}
+            type="primary"
+            style={{ fontWeight: "bold", backgroundColor: "#1890ff", borderColor: "#1890ff" }}
+          >
             Subir archivo para verificar
           </Button>
         </Upload>
+      </div>
       </div>
 
       {/* Modal para mostrar el resultado de la verificación */}
