@@ -242,7 +242,7 @@ const TransactionsTable = ({ transactions, certificateHash }) => {
             <p><strong>Item:</strong> #{selectedTransaction.item}</p>
             <p><strong>Fecha y Hora:</strong> {selectedTransaction.formattedTimestamp}</p>
 
-            {certificateHash && (
+            {/* {certificateHash && (
               <div style={{ marginTop: "12px", padding: "10px", backgroundColor: "#ffffff", borderRadius: "6px", boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)" }}>
                 <p style={{ margin: "0", fontWeight: "500", color: "#1890ff" }}><strong>Certificado Hash:</strong></p>
                 <Tooltip title="Copiar Certificado Hash">
@@ -251,7 +251,7 @@ const TransactionsTable = ({ transactions, certificateHash }) => {
                   </Button>
                 </Tooltip>
               </div>
-            )}
+            )} */}
 
             {/* Botón para descargar los detalles */}
             <div style={{ textAlign: "right", marginTop: "20px" }}>
