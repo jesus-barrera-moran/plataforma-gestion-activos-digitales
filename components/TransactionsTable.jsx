@@ -88,7 +88,7 @@ const TransactionsTable = ({ transactions, certificateHash }) => {
         <Tooltip title={text}>
           <span style={{ display: 'inline-flex', alignItems: 'center' }}>
             <a
-              href={`https://cardona-zkevm.polygonscan.com/tx/${text}`}
+              href={`https://etherscan.io/tx/${text}`}
               target="_blank"
               rel="noopener noreferrer"
               style={{ fontSize: '14px', color: '#1890ff', marginRight: '8px' }}

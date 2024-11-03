@@ -284,52 +284,102 @@ export const NFTMarketplaceProvider = ({ children }) => {
   };
 
   //--FETCHNFTS FUNCTION
+  // const fetchNFTs = async () => {
+  //   try {
+  //     const address = await checkIfWalletConnected();
+  //     if (address) {
+  //       const web3Modal = new Web3Modal();
+  //       const connection = await web3Modal.connect();
+  //       const provider = new ethers.providers.Web3Provider(connection);
+
+  //       const contract = fetchContract(provider);
+
+  //       const data = await contract.fetchMarketItems();
+
+  //       console.log(data);
+
+  //       const items = await Promise.all(
+  //         data.map(
+  //           async ({ tokenId, seller, owner, price: unformattedPrice }) => {
+  //             const tokenURI = await contract.tokenURI(tokenId);
+
+  //             const {
+  //               data: { image, name, description, website },
+  //             } = await axios.get(tokenURI, {});
+  //             const price = ethers.utils.formatUnits(
+  //               unformattedPrice.toString(),
+  //               "ether"
+  //             );
+
+  //             return {
+  //               price,
+  //               tokenId: tokenId.toNumber(),
+  //               seller,
+  //               owner,
+  //               image,
+  //               name,
+  //               description,
+  //               website,
+  //               tokenURI,
+  //             };
+  //           }
+  //         )
+  //       );
+  //       console.log("NFT", items);
+  //       return items;
+  //     }
+
+  //     // }
+  //   } catch (error) {
+  //     setError("Ha ocurrido un error al obtener los activos digitales");
+  //     setOpenError(true);
+  //     console.log(error);
+  //   }
+  // };
+
+  const fakeMarketItems = [
+    {
+      price: "0.89",
+      tokenId: 1,
+      seller: "0x8E4a5B7cC3b9a2F1B6e5f7D8d9c4e5A3b2A4c7D9",
+      owner: NFTMarketplaceAddress,
+      image: "https://gateway.pinata.cloud/ipfs/QmfTjXUqgms6wL9gHyFaYoxj81W7wwE1ZatxiEK2LVvHxp",
+      name: "Rupestre maya",
+      description: "Foto de una pintura rupestre maya en una cueva en Peten, Guatemala.",
+      website: "",
+      tokenURI: "https://gateway.pinata.cloud/ipfs/QmfTjXUqgms6wL9gHyFaYoxj81W7wwE1ZatxiEK2LVvHxp/metadata1.json",
+    },
+    {
+      price: "0.25",
+      tokenId: 3,
+      seller: "0x2E1a9B5cD7f4a8C3b6d2f5E9C4a1e3b7F8a6C2d9",
+      owner: NFTMarketplaceAddress,
+      image: "https://gateway.pinata.cloud/ipfs/QmfLAcJN3vv68AcC3uwQVEVELoB1zUmeEYrnsNeiDtLpEC",
+      name: "Calle en antigua",
+      description: "Calle tipica en Antigua Guatemala, con flores y vista del volcan.",
+      website: "",
+      tokenURI: "https://gateway.pinata.cloud/ipfs/QmfLAcJN3vv68AcC3uwQVEVELoB1zUmeEYrnsNeiDtLpEC/metadata3.json",
+    },
+    {
+      price: "2",
+      tokenId: 6,
+      seller: "0x6A3b1e7d5C8f9B4c2A9d6E2f4A3e1B7C9D5a4f8E",
+      owner: NFTMarketplaceAddress,
+      image: "https://gateway.pinata.cloud/ipfs/QmbjzUgtTb1N1zhgreRAe2Tt1ixzFvL5WMiPrGbNVuspU2",
+      name: "Antiguo convento",
+      description: "Patio interior de un convento viejo en la ciudad de Guatemala.",
+      website: "",
+      tokenURI: "https://gateway.pinata.cloud/ipfs/QmbjzUgtTb1N1zhgreRAe2Tt1ixzFvL5WMiPrGbNVuspU2/metadata6.json",
+    }
+  ];
+  
   const fetchNFTs = async () => {
     try {
       const address = await checkIfWalletConnected();
       if (address) {
-        const web3Modal = new Web3Modal();
-        const connection = await web3Modal.connect();
-        const provider = new ethers.providers.Web3Provider(connection);
-
-        const contract = fetchContract(provider);
-
-        const data = await contract.fetchMarketItems();
-
-        console.log(data);
-
-        const items = await Promise.all(
-          data.map(
-            async ({ tokenId, seller, owner, price: unformattedPrice }) => {
-              const tokenURI = await contract.tokenURI(tokenId);
-
-              const {
-                data: { image, name, description, website },
-              } = await axios.get(tokenURI, {});
-              const price = ethers.utils.formatUnits(
-                unformattedPrice.toString(),
-                "ether"
-              );
-
-              return {
-                price,
-                tokenId: tokenId.toNumber(),
-                seller,
-                owner,
-                image,
-                name,
-                description,
-                website,
-                tokenURI,
-              };
-            }
-          )
-        );
-        console.log("NFT", items);
-        return items;
+        console.log("NFT Market Items (falsos)", fakeMarketItems);
+        return fakeMarketItems;
       }
-
-      // }
     } catch (error) {
       setError("Ha ocurrido un error al obtener los activos digitales");
       setOpenError(true);
@@ -476,110 +526,305 @@ export const NFTMarketplaceProvider = ({ children }) => {
     }
   };
 
+  // const getNFTTransactionHistory = async (tokenId) => {
+  //   try {
+  //     const provider = new ethers.providers.Web3Provider(window.ethereum);
+  //     const contract = new ethers.Contract(
+  //       NFTMarketplaceAddress,
+  //       NFTMarketplaceABI,
+  //       provider
+  //     );
+  
+  //     // Filtra eventos Transfer sin tokenId específico
+  //     const transferEvents = await contract.queryFilter(
+  //       contract.filters.Transfer()
+  //     );
+  
+  //     // Filtra solo las transacciones relevantes para el tokenId proporcionado
+  //     const history = await Promise.all(
+  //       transferEvents
+  //         .filter((event) => event.args[2].toString() === tokenId)
+  //         .map(async (event) => {
+  //           // Obtener el bloque para la marca de tiempo
+  //           const block = await provider.getBlock(event.blockNumber);
+  //           const timestamp = block.timestamp * 1000; // Convertir a milisegundos para formatear como fecha
+  
+  //           // Determinar el precio solo si la transacción es de tipo "Compra" o "Publicación"
+  //           let price = null;
+  //           if (
+  //             event.args[1].toLowerCase() === NFTMarketplaceAddress.toLowerCase() || // Publicación
+  //             event.args[0].toLowerCase() === NFTMarketplaceAddress.toLowerCase()    // Compra
+  //           ) {
+  //             const marketItem = await contract.getMarketItem(tokenId);
+  //             price = ethers.utils.formatEther(marketItem.price);
+  //           }
+  
+  //           return {
+  //             from: event.args[0],
+  //             to: event.args[1],
+  //             transactionHash: event.transactionHash,
+  //             blockNumber: event.blockNumber,
+  //             timestamp,
+  //             price,
+  //           };
+  //         })
+  //     );
+  
+  //     console.log("Transaction History:", history);
+  
+  //     return history;
+  //   } catch (error) {
+  //     console.error("Error fetching transaction history: ", error);
+  //     return [];
+  //   }
+  // };
+
+  const fakeTransactions = [
+    {
+      from: "0x0000000000000000000000000000000000000000", // Creación
+      to: "0x8E4a5B7cC3b9a2F1B6e5f7D8d9c4e5A3b2A4c7D9",
+      tokenId: "1",
+      transactionHash: "0x1a9c3b6d5e8f7a4c2b5d8a1c9e3f4b7d6e1a9c2b5f8a7e3d4c9b2e5a6d7f8b3c",
+      blockNumber: 18245210,
+      timestamp: 1727731530000, // 30 de octubre de 2024, 09:12:13 AM
+      price: null,
+    },
+    {
+      from: "0x8E4a5B7cC3b9a2F1B6e5f7D8d9c4e5A3b2A4c7D9",
+      to: NFTMarketplaceAddress, // Publicación
+      tokenId: "1",
+      transactionHash: "0x5d8f7a3b1e4c6b9d2a5e1f9c3b7d6e4a9c1b5f2a8c7d3e5f6a4b8e7c9d1a2b5",
+      blockNumber: 18245711,
+      timestamp: 1727846785000, // 31 de octubre de 2024, 01:33:05 PM
+      price: "0.89",
+    },
+    {
+      from: "0x0000000000000000000000000000000000000000",
+      to: "0x2E1a9B5cD7f4a8C3b6d2f5E9C4a1e3b7F8a6C2d9", // Transferencia
+      tokenId: "3",
+      transactionHash: "0x2d7f4a1c9e5b6d8a3b2f7c9a1e3b8d4c7f5e9a6b1f3c2e4d5a7b9f1e3c6d5a8",
+      blockNumber: 18246012,
+      timestamp: 1728028524000, // 2 de noviembre de 2024, 10:55:24 AM
+      price: null,
+    },
+    {
+      from: "0x2E1a9B5cD7f4a8C3b6d2f5E9C4a1e3b7F8a6C2d9",
+      to: NFTMarketplaceAddress, // Publicación
+      tokenId: "3",
+      transactionHash: "0x8c7b9f2e1d5a3c4e6a8b1f7d3b9a2f6d5c4e8a1f7b3d6e4c9a7b1e5c3d8a4f9",
+      blockNumber: 18246500,
+      timestamp: 1728275478000, // 5 de noviembre de 2024, 08:51:18 PM
+      price: "2.85",
+    },
+    {
+      from: "0x0000000000000000000000000000000000000000", // Creación
+      to: "0x6A3b1e7d5C8f9B4c2A9d6E2f4A3e1B7C9D5a4f8E",
+      tokenId: "6",
+      transactionHash: "0x6b7d3a8f2e5c9d1a4e3f7b6a9f2c1e8d4c9b7e5a3f1d6a4e3c8b9d1f5a7e6c2",
+      blockNumber: 18247400,
+      timestamp: 1729125490000, // 15 de noviembre de 2024, 12:18:10 PM
+      price: null,
+    },
+    {
+      from: "0x6A3b1e7d5C8f9B4c2A9d6E2f4A3e1B7C9D5a4f8E",
+      to: NFTMarketplaceAddress, // Publicación
+      tokenId: "6",
+      transactionHash: "0x3e5c7f1a8b4d2a6f9e3c5b9a1d7a4f8c2b6e9f5a4c3e7d1f5b2c6a8d4e1f9b3",
+      blockNumber: 18248000,
+      timestamp: 1729580452000, // 20 de noviembre de 2024, 02:27:32 PM
+      price: "2.63",
+    }
+  ];
+  
   const getNFTTransactionHistory = async (tokenId) => {
     try {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const contract = new ethers.Contract(
-        NFTMarketplaceAddress,
-        NFTMarketplaceABI,
-        provider
-      );
-  
-      // Filtra eventos Transfer sin tokenId específico
-      const transferEvents = await contract.queryFilter(
-        contract.filters.Transfer()
-      );
-  
       // Filtra solo las transacciones relevantes para el tokenId proporcionado
-      const history = await Promise.all(
-        transferEvents
-          .filter((event) => event.args[2].toString() === tokenId)
-          .map(async (event) => {
-            // Obtener el bloque para la marca de tiempo
-            const block = await provider.getBlock(event.blockNumber);
-            const timestamp = block.timestamp * 1000; // Convertir a milisegundos para formatear como fecha
+      const history = fakeTransactions
+        .filter((transaction) => transaction.tokenId === tokenId.toString())
+        .map((transaction) => {
+          return {
+            from: transaction.from,
+            to: transaction.to,
+            transactionHash: transaction.transactionHash,
+            blockNumber: transaction.blockNumber,
+            timestamp: transaction.timestamp,
+            price: transaction.price,
+          };
+        });
   
-            // Determinar el precio solo si la transacción es de tipo "Compra" o "Publicación"
-            let price = null;
-            if (
-              event.args[1].toLowerCase() === NFTMarketplaceAddress.toLowerCase() || // Publicación
-              event.args[0].toLowerCase() === NFTMarketplaceAddress.toLowerCase()    // Compra
-            ) {
-              const marketItem = await contract.getMarketItem(tokenId);
-              price = ethers.utils.formatEther(marketItem.price);
-            }
-  
-            return {
-              from: event.args[0],
-              to: event.args[1],
-              transactionHash: event.transactionHash,
-              blockNumber: event.blockNumber,
-              timestamp,
-              price,
-            };
-          })
-      );
-  
-      console.log("Transaction History:", history);
-  
+      console.log("Transaction History for tokenId", tokenId, ":", history);
       return history;
     } catch (error) {
       console.error("Error fetching transaction history: ", error);
       return [];
     }
   };
+  
+
+  // const getContractTransactionHistory = async () => {
+  //   try {
+  //     const provider = new ethers.providers.Web3Provider(window.ethereum);
+  //     const contract = new ethers.Contract(
+  //       NFTMarketplaceAddress,
+  //       NFTMarketplaceABI,
+  //       provider
+  //     );
+  
+  //     // Obtén todos los eventos de Transferencia sin filtrar por tokenId
+  //     const transferEvents = await contract.queryFilter(
+  //       contract.filters.Transfer()
+  //     );
+  
+  //     // Mapea los eventos a una estructura de transacción
+  //     const history = await Promise.all(
+  //       transferEvents.map(async (event) => {
+  //         // Obtén el bloque para acceder a la marca de tiempo
+  //         const block = await provider.getBlock(event.blockNumber);
+  //         const timestamp = block.timestamp * 1000; // Convierte a milisegundos para formatear como fecha
+  
+  //         // Determina el precio solo si la transacción es de tipo "Compra" o "Publicación"
+  //         let price = null;
+  //         const tokenId = event.args[2].toString();
+  //         if (
+  //           event.args[1].toLowerCase() === NFTMarketplaceAddress.toLowerCase() || // Publicación
+  //           event.args[0].toLowerCase() === NFTMarketplaceAddress.toLowerCase()    // Compra
+  //         ) {
+  //           const marketItem = await contract.getMarketItem(tokenId);
+  //           price = ethers.utils.formatEther(marketItem.price);
+  //         }
+  
+  //         return {
+  //           from: event.args[0],
+  //           to: event.args[1],
+  //           tokenId,
+  //           transactionHash: event.transactionHash,
+  //           blockNumber: event.blockNumber,
+  //           timestamp,
+  //           price,
+  //         };
+  //       })
+  //     );
+  
+  //     console.log("Contract Transaction History:", history);
+  //     return history;
+  //   } catch (error) {
+  //     console.error("Error fetching contract transaction history: ", error);
+  //     return [];
+  //   }
+  // };  
 
   const getContractTransactionHistory = async () => {
-    try {
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const contract = new ethers.Contract(
-        NFTMarketplaceAddress,
-        NFTMarketplaceABI,
-        provider
-      );
-  
-      // Obtén todos los eventos de Transferencia sin filtrar por tokenId
-      const transferEvents = await contract.queryFilter(
-        contract.filters.Transfer()
-      );
-  
-      // Mapea los eventos a una estructura de transacción
-      const history = await Promise.all(
-        transferEvents.map(async (event) => {
-          // Obtén el bloque para acceder a la marca de tiempo
-          const block = await provider.getBlock(event.blockNumber);
-          const timestamp = block.timestamp * 1000; // Convierte a milisegundos para formatear como fecha
-  
-          // Determina el precio solo si la transacción es de tipo "Compra" o "Publicación"
-          let price = null;
-          const tokenId = event.args[2].toString();
-          if (
-            event.args[1].toLowerCase() === NFTMarketplaceAddress.toLowerCase() || // Publicación
-            event.args[0].toLowerCase() === NFTMarketplaceAddress.toLowerCase()    // Compra
-          ) {
-            const marketItem = await contract.getMarketItem(tokenId);
-            price = ethers.utils.formatEther(marketItem.price);
-          }
-  
-          return {
-            from: event.args[0],
-            to: event.args[1],
-            tokenId,
-            transactionHash: event.transactionHash,
-            blockNumber: event.blockNumber,
-            timestamp,
-            price,
-          };
-        })
-      );
-  
-      console.log("Contract Transaction History:", history);
-      return history;
-    } catch (error) {
-      console.error("Error fetching contract transaction history: ", error);
-      return [];
-    }
-  };  
+    return [
+      {
+        from: "0x0000000000000000000000000000000000000000", // Creación
+        to: "0x8E4a5B7cC3b9a2F1B6e5f7D8d9c4e5A3b2A4c7D9",
+        tokenId: "1",
+        transactionHash: "0x1a9c3b6d5e8f7a4c2b5d8a1c9e3f4b7d6e1a9c2b5f8a7e3d4c9b2e5a6d7f8b3c",
+        blockNumber: 18245210,
+        timestamp: 1727731530000, // 30 de octubre de 2024, 09:12:13 AM
+        price: null,
+      },
+      {
+        from: "0x8E4a5B7cC3b9a2F1B6e5f7D8d9c4e5A3b2A4c7D9",
+        to: NFTMarketplaceAddress, // Publicación
+        tokenId: "1",
+        transactionHash: "0x5d8f7a3b1e4c6b9d2a5e1f9c3b7d6e4a9c1b5f2a8c7d3e5f6a4b8e7c9d1a2b5",
+        blockNumber: 18245711,
+        timestamp: 1727846785000, // 31 de octubre de 2024, 01:33:05 PM
+        price: "0.89",
+      },
+      {
+        from: "0x0000000000000000000000000000000000000000", // Creación
+        to: "0x9eF5C8a6D2f4B3d7A5E1c9f7d3a4c2B9E8f7D3c1",
+        tokenId: "2",
+        transactionHash: "0x3b9d4e1f8a7c5d6b2a4f9e1c7d3e2b8a9f5d4c3e1b7a2f6d8e4c9f1a6e3d5b7",
+        blockNumber: 18245900,
+        timestamp: 1727919232000, // 1 de noviembre de 2024, 06:20:32 PM
+        price: null,
+      },
+      {
+        from: "0x0000000000000000000000000000000000000000",
+        to: "0x2E1a9B5cD7f4a8C3b6d2f5E9C4a1e3b7F8a6C2d9", // Transferencia
+        tokenId: "3",
+        transactionHash: "0x2d7f4a1c9e5b6d8a3b2f7c9a1e3b8d4c7f5e9a6b1f3c2e4d5a7b9f1e3c6d5a8",
+        blockNumber: 18246012,
+        timestamp: 1728028524000, // 2 de noviembre de 2024, 10:55:24 AM
+        price: null,
+      },
+      {
+        from: "0x0000000000000000000000000000000000000000", // Creación
+        to: "0x4B9d3E5a1f6C7a8B2c5D4f9a3E2b6d1C7F8a2e3D",
+        tokenId: "4",
+        transactionHash: "0x9e2f7d4a1c5b8e3a6d9f1b2c7d6a9e4f3b5d8a1f3c6e5d2a4c7f9b3d1e8a6b2",
+        blockNumber: 18246255,
+        timestamp: 1728102836000, // 3 de noviembre de 2024, 05:20:36 PM
+        price: null,
+      },
+      {
+        from: "0x2E1a9B5cD7f4a8C3b6d2f5E9C4a1e3b7F8a6C2d9",
+        to: NFTMarketplaceAddress, // Publicación
+        tokenId: "3",
+        transactionHash: "0x8c7b9f2e1d5a3c4e6a8b1f7d3b9a2f6d5c4e8a1f7b3d6e4c9a7b1e5c3d8a4f9",
+        blockNumber: 18246500,
+        timestamp: 1728275478000, // 5 de noviembre de 2024, 08:51:18 PM
+        price: "2.85",
+      },
+      {
+        from: "0x0000000000000000000000000000000000000000",
+        to: "0x5a7E1C3f6B9d2a4C8D3b6E2F4a1f7B5e9d4A3C6f", // Transferencia
+        tokenId: "5",
+        transactionHash: "0x7f3d1c8a5b2e6d4c9a1f9b3e7a2c6f8d5b9a4e3c1d5a7b8f4e2c9d3a6f1b7e4",
+        blockNumber: 18247045,
+        timestamp: 1728686890000, // 10 de noviembre de 2024, 12:34:50 PM
+        price: null,
+      },
+      {
+        from: "0x0000000000000000000000000000000000000000", // Creación
+        to: "0x6A3b1e7d5C8f9B4c2A9d6E2f4A3e1B7C9D5a4f8E",
+        tokenId: "6",
+        transactionHash: "0x6b7d3a8f2e5c9d1a4e3f7b6a9f2c1e8d4c9b7e5a3f1d6a4e3c8b9d1f5a7e6c2",
+        blockNumber: 18247400,
+        timestamp: 1729125490000, // 15 de noviembre de 2024, 12:18:10 PM
+        price: null,
+      },
+      {
+        from: "0x6A3b1e7d5C8f9B4c2A9d6E2f4A3e1B7C9D5a4f8E",
+        to: NFTMarketplaceAddress, // Publicación
+        tokenId: "6",
+        transactionHash: "0x3e5c7f1a8b4d2a6f9e3c5b9a1d7a4f8c2b6e9f5a4c3e7d1f5b2c6a8d4e1f9b3",
+        blockNumber: 18248000,
+        timestamp: 1729580452000, // 20 de noviembre de 2024, 02:27:32 PM
+        price: "2.63",
+      },
+      {
+        from: "0x0000000000000000000000000000000000000000", // Creación
+        to: "0x1f8c4B9d5E3a6A9c2b7F5D4C3E8a2d7e4B1a6C8f",
+        tokenId: "7",
+        transactionHash: "0x4b2e7d3f1a8c9e5a6d1c7b4f9e3a2f6c8d5a9b1e3c7f5d2a9f4b3e8c1d6a5f7",
+        blockNumber: 18248500,
+        timestamp: 1730017260000, // 25 de noviembre de 2024, 10:21:00 AM
+        price: null,
+      },
+      {
+        from: "0x0000000000000000000000000000000000000000", // Creación
+        to: "0x5c8E3a7d5F4A9b6C2a9D3e7F1B6c8D2e3A9f4E1B",
+        tokenId: "8",
+        transactionHash: "0xa9d5c3e2f8b4d7a6c1e3b9f7a5d6c2b3e1a7c4f8b5e2d9c1f4a8d6e7c1f9b3",
+        blockNumber: 18248750,
+        timestamp: 1730103451000, // 26 de noviembre de 2024, 12:10:51 PM
+        price: "1.75",
+      },
+      {
+        from: "0x0000000000000000000000000000000000000000",
+        to: "0x7b3D6c8A4e2F9a1C5b6D4f3A7c9E8d5A2B4C6f1D", // Publicación
+        tokenId: "9",
+        transactionHash: "0x7db74c6d5c39e8fb34bdc60e83ff436fd3039bf4ea15bdc88caf59f8ce365e28",
+        blockNumber: 18249000,
+        timestamp: 1730168327000, // 27 de noviembre de 2024, 03:32:07 PM
+        price: "3.25",
+      }
+    ];
+  }
 
   return (
     <NFTMarketplaceContext.Provider
