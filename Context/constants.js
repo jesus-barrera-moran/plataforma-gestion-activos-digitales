@@ -1,6 +1,6 @@
 import nftMarketplace from "../build/contracts/NFTMarketplace.json";
 
-export const NFTMarketplaceAddress = "0xB188ae77371ea96E445f7C94ECc7ebC6abD59b03";
+export const NFTMarketplaceAddress = "0x7579aE8D8A36A3c76B5f151D4F22F295d46ebB78";
 
 export const NFTMarketplaceABI = nftMarketplace.abi;
 
