@@ -11,11 +11,7 @@ const account = () => {
   const [fileUrl, setFileUrl] = useState(null);
 
   const onDrop = useCallback(async (acceptedFile) => {
-    setFileUrl(acceptedFile[0]); // Test
-  }, []);
-
-  const fakeMethod = useCallback(async (acceptedFile) => {
-    setFileUrl(acceptedFile[0]); // Test
+    setFileUrl(acceptedFile[0]);
   }, []);
 
   const { getRootProps, getInputProps } = useDropzone({
