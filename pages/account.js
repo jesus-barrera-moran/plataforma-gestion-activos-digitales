@@ -14,6 +14,10 @@ const account = () => {
     setFileUrl(acceptedFile[0]); // Test
   }, []);
 
+  const fakeMethod = useCallback(async (acceptedFile) => {
+    setFileUrl(acceptedFile[0]); // Test
+  }, []);
+
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
     accept: "image/*",
